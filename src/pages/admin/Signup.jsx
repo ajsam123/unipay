@@ -1,28 +1,36 @@
 import React, { useState } from "react";
-import Logo from "../../components/Logo";
-import AuthLayout from "../../layouts/AuthLayout";
 import Input from "../../components/Input";
 import mail from "./../../assets/mail-01.svg";
 import lock from "./../../assets/lock-03.svg";
 import Button from "../../components/Button";
 import { routes } from "./../../constants/routes.js";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schema.js";
+import { signup } from "../../services/authService.js";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const submitHandler = (data) => {
+  const submitHandler = async (data) => {
     try {
       setIsLoading(true);
-      setTimeout(() => {
-        // setIsLoading(false);
-      }, 2000);
-      console.log("Registration Data:", data);
+
+      await signup(data);
+
+      navigate(routes.VERIFYEMAIL, {
+        state: { email: data.email },
+      });
     } catch (error) {
-      console.log("Registration Error:", error);
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Something went wrong";
+
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -38,44 +46,46 @@ const Signup = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    values: {
+    defaultValues: {
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
-      firstname: "",
-      lastname: "",
+      confirm_password: "",
     },
   });
+
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="text-center">
         <h1 className="heading-3">Create your account</h1>
         <span className="text-neutral-black-9 dark:text-neutral-400 body-medium-medium">
-          Please input to your account
+          Please fill in your details to create an account
         </span>
       </div>
+
       <form
         onSubmit={handleSubmit(submitHandler, errorHandler)}
         className="flex flex-col gap-4 w-full"
       >
         <div className="flex items-center gap-4">
           <Input
-            {...register("firstname")}
-            leftIcon={<img src={mail} alt="mail icon" />}
+            {...register("first_name")}
             label="First Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your first name"
-            error={errors.firstname?.message}
+            error={errors.first_name?.message}
           />
 
           <Input
-            {...register("lastname")}
-            leftIcon={<img src={lock} alt="mail icon" />}
+            {...register("last_name")}
             label="Last Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your last name"
-            error={errors.lastname?.message}
+            error={errors.last_name?.message}
           />
         </div>
+
         <Input
           {...register("email")}
           leftIcon={<img src={mail} alt="mail icon" />}
@@ -87,21 +97,32 @@ const Signup = () => {
 
         <Input
           {...register("password")}
-          leftIcon={<img src={lock} alt="mail icon" />}
+          leftIcon={<img src={lock} alt="lock icon" />}
+          type="password"
           label="Password"
           className="w-full border-neutral-black-9"
           placeholder="Your password"
           error={errors.password?.message}
         />
+
+        <Input
+          {...register("confirm_password")}
+          leftIcon={<img src={lock} alt="lock icon" />}
+          className="w-full border-neutral-black-9"
+          label="Confirm Password"
+          type="password"
+          error={errors.confirm_password?.message}
+        />
+
         <Button isLoading={isLoading}>Sign up</Button>
       </form>
+
       <div className="text-center flex flex-col gap-4">
-        <span>forgot password?</span>
         <span>
           Already have an account?{" "}
           <Link className="text-neutral-black-9" to={routes.LOGIN}>
             Log in
-          </Link>{" "}
+          </Link>
         </span>
       </div>
     </div>
