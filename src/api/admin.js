@@ -30,35 +30,35 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    // const originalRequest = error.config;
 
     // If access token expired
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    // if (error.response?.status === 401 && !originalRequest._retry) {
+    //   originalRequest._retry = true;
 
-      try {
-        const refresh = localStorage.getItem("refresh");
+    //   try {
+    //     const refresh = localStorage.getItem("refresh");
 
-        const res = await axios.post(
-          "https://student-rxt6.onrender.com/auth/jwt/refresh/",
-          { refresh }
-        );
+    //     const res = await axios.post(
+    //       "https://student-rxt6.onrender.com/auth/jwt/refresh/",
+    //       { refresh }
+    //     );
 
-        localStorage.setItem("access", res.data.access);
+    //     localStorage.setItem("access", res.data.access);
 
-        // Retry original request with new token
-        originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
+    //     // Retry original request with new token
+    //     originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
 
-        return api(originalRequest);
-      } catch (err) {
-        // Refresh failed → logout
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
+    //     return api(originalRequest);
+    //   } catch (err) {
+    //     // Refresh failed → logout
+    //     localStorage.removeItem("access");
+    //     localStorage.removeItem("refresh");
 
-        window.location.href = "/login";
-        return Promise.reject(err);
-      }
-    }
+    //     window.location.href = "/login";
+    //     return Promise.reject(err);
+    //   }
+    // }
 
     return Promise.reject(error);
   }

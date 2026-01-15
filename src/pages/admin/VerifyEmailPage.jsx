@@ -18,11 +18,12 @@ const VerifyEmailPage = () => {
       toast.success("Email verified successfully");
       navigate(routes.LOGIN);
     } catch (error) {
-      setError(
+      const message =
         error?.response?.data?.error ||
-          error?.response?.data?.message ||
-          "Invalid or expired OTP"
-      );
+        error?.response?.data?.message ||
+        "Invalid or expired OTP";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

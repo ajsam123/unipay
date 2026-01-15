@@ -1,43 +1,29 @@
 import { useLocation, useNavigate } from "react-router";
-import { routes } from "../../constants/routes";
-import OtpForm from "../../components/OtpForm";
 import { resendOtp, verifyLoginOtp } from "../../services/authService";
+import OtpForm from "../../components/OtpForm";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { routes } from "../../constants/routes";
+import { useState } from "react";
 
 const LoginOtp = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
-
   const [isLoading, setIsLoading] = useState(false);
 
-  // Safety: redirect if accessed directly
-  useEffect(() => {
-    if (!email) {
-      navigate(routes.LOGIN);
-    }
-  }, [email, navigate]);
-
-  const handleSubmit = async (otpCode, setError) => {
+  const handleLogin = async (otp, setError) => {
     try {
       setIsLoading(true);
-
-      await verifyLoginOtp({
-        email,
-        otp: otpCode,
-      });
-
-      toast.success("Login successful");
+      await verifyLoginOtp({ email, otp });
+      toast.success("Email verified successfully");
       navigate(routes.DASHBOARD);
     } catch (error) {
       const message =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
         "Invalid or expired OTP";
-
       setError(message);
-      toast(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -47,14 +33,13 @@ const LoginOtp = () => {
     try {
       setIsLoading(true);
       await resendOtp({ email });
-      toast.success("OTP resent successfully");
+      toast.success("OTP resent");
     } catch (error) {
-      const message =
+      toast.error(
         error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Failed to resend OTP";
-
-      toast.error(message);
+          error?.response?.data?.message ||
+          "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -63,10 +48,10 @@ const LoginOtp = () => {
   return (
     <OtpForm
       email={email}
-      title="Confirm Login"
-      subtitle="Enter the code sent to"
+      title="Login verification"
+      subtitle="We sent a code to"
       isLoading={isLoading}
-      onSubmit={handleSubmit}
+      onSubmit={handleLogin}
       onResend={handleResend}
     />
   );

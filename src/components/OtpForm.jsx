@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "./Button";
 import OtpInput from "./OtpInput";
+import toast from "react-hot-toast";
 
 const OtpForm = ({ email, onSubmit, onResend, title, subtitle, isLoading }) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -15,7 +16,17 @@ const OtpForm = ({ email, onSubmit, onResend, title, subtitle, isLoading }) => {
     }
 
     setError(null);
-    await onSubmit(otpCode, setError);
+
+    try {
+      await onSubmit(otpCode, setError);
+    } catch (error) {
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Invalid or expired OTP";
+      setError(message);
+      toast.error(message);
+    }
   };
 
   return (
