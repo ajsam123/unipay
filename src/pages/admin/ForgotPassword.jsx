@@ -8,10 +8,11 @@ import { routes } from "../../constants/routes";
 import { forgotPasswordSchema } from "../../schemas/auth.schema";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
+import { forgotPassword } from "../../services/authService";
+import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -29,14 +30,12 @@ const ForgotPassword = () => {
   const submitFunc = async (data) => {
     setIsLoading(true);
     try {
-      // await forgotPassword(data);
-      setSuccess(true);
+      await forgotPassword(data);
       setError(null);
-
+      toast.success("OTP sent to Email");
       navigate(routes.CONFIRMOTP, { state: { email: data.email } });
     } catch (err) {
       console.log(err);
-      setSuccess(false);
       setError(err.response?.data || "Something went wrong");
     } finally {
       setIsLoading(false);

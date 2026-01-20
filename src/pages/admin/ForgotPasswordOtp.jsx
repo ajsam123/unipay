@@ -1,0 +1,40 @@
+import { useLocation, useNavigate } from "react-router";
+import OtpForm from "../../components/OtpForm";
+import { routes } from "../../constants/routes";
+
+const ForgotPasswordOtp = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (data) => {
+    try {
+      setIsLoading(true);
+      navigate(routes.RESETPASSWORD, { state: { email, otp: data } });
+    } catch (error) {
+      console.error(error);
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Invalid email or password";
+
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  return (
+    <div>
+      <OtpForm
+        email={email}
+        onSubmit={handleSubmit}
+        title="Reset Password Verification"
+        subtitle="We sent a code to"
+        isLoading={isLoading}
+      />
+    </div>
+  );
+};
+
+export default ForgotPasswordOtp;

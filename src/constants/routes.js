@@ -9,4 +9,6 @@ export const routes = {
   ONBOARDINGONE: "/onboarding-one",
   ONBOARDINGTWO: "/onboarding-two",
   FORGOTPASSWORD: "/forgot-password",
+  FORGOTPASSWORDOTP: "/forgot-password-otp",
+  RESETPASSWORD: "/reset-password",
 };
