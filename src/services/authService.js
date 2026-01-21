@@ -19,11 +19,11 @@ export const verifyLoginOtp = (data) =>
   authApi.post("/api/auth/login/verify-otp/", data);
 
 export const forgotPassword = (data) => {
- authApi.post("/api/auth/forgot-password/")
+ authApi.post("/api/auth/forgot-password/", data)
 }
 
 export const resetPassword = (data) => {
- authApi.post("/api/auth/reset-password/")
+ authApi.post("/api/auth/reset-password/", data)
 }
 
 export const resendOtp = (data) => authApi.post("/api/auth/resend-otp/", data);

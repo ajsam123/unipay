@@ -12,6 +12,8 @@ import ForgotPassword from "./pages/admin/ForgotPassword";
 import VerifyEmailPage from "./pages/admin/VerifyEmailPage";
 import LoginOtp from "./pages/admin/LogInOtp";
 import { Toaster } from "react-hot-toast";
+import ForgotPasswordOtp from "./pages/admin/ForgotPasswordOtp";
+import ResetPassword from "./pages/admin/ResetPassword";
 
 function App() {
   return (
@@ -26,6 +28,11 @@ function App() {
           <Route path={routes.FORGOTPASSWORD} element={<ForgotPassword />} />
           <Route path={routes.VERIFYEMAIL} element={<VerifyEmailPage />} />
           <Route path={routes.LOGINOTP} element={<LoginOtp />} />
+          <Route
+            path={routes.FORGOTPASSWORDOTP}
+            element={<ForgotPasswordOtp />}
+          />
+          <Route path={routes.RESETPASSWORD} element={<ResetPassword />} />
         </Route>
         <Route path={routes.DASHBOARD} element={<Dashboard />} />
       </Routes>

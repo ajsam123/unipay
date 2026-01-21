@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router";
 import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
+import { useState } from "react";
 
 const ForgotPasswordOtp = () => {
   const location = useLocation();

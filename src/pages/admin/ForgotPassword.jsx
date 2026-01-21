@@ -22,18 +22,21 @@ const ForgotPassword = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
-    values: {
+    defaultValues: {
       email: "",
     },
   });
 
   const submitFunc = async (data) => {
-    setIsLoading(true);
+    console.log('This is the data:', data)
     try {
+      setIsLoading(true)
+
       await forgotPassword(data);
+
       setError(null);
       toast.success("OTP sent to Email");
-      navigate(routes.CONFIRMOTP, { state: { email: data.email } });
+      navigate(routes.FORGOTPASSWORDOTP, { state: { email: data.email } });
     } catch (err) {
       console.log(err);
       setError(err.response?.data || "Something went wrong");

@@ -29,16 +29,16 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z
   .object({
-    password: z
+    new_password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
       .regex(
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
         "Password must contain atleast 1 uppercase, 1 lowercase,1 number and 1 special character "
       ),
-    confirmPassword: z.string().min(8, "Please confirm your password"),
+    confirm_new_password: z.string().min(8, "Please confirm your password"),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.new_password === data.confirm_new_password, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["Confirm_new_password"],
   });

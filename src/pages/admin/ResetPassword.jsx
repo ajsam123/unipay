@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../../components/Input";
 import lock from "./../../assets/lock-03.svg";
@@ -11,6 +11,13 @@ import { resetPasswordSchema } from "../../schemas/auth.schema.js";
 import { resetPassword } from "../../services/authService.js";
 
 const ResetPassword = () => {
+//   useEffect(() => {
+//     if (!email || !otp) {
+//       toast.error("Session expired. Please start over.");
+//       navigate(routes.FORGOTPASSWORD);
+//     }
+//   }, [email, otp, navigate]);
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,18 +31,24 @@ const ResetPassword = () => {
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      email: email,
-      otp: otp,
       new_password: "",
       confirm_new_password: "",
     },
   });
 
   const submitHandler = async (val) => {
+    const payload = {
+      ...val,
+      email: email,
+      otp: otp,
+    };
     try {
       setIsLoading(true);
-      await resetPassword(val);
+
+      await resetPassword(payload);
+
       toast.success("Password reset Successful. Redirecting to login...");
+
       navigate(routes.LOGIN);
     } catch (error) {
       const message =
@@ -45,7 +58,6 @@ const ResetPassword = () => {
       toast.error(message);
     } finally {
       setIsLoading(false);
-      navigate(routes.LOGIN);
     }
   };
 
