@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router";
 import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const ForgotPasswordOtp = () => {
   const location = useLocation();

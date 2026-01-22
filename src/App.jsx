@@ -14,6 +14,10 @@ import LoginOtp from "./pages/admin/LogInOtp";
 import { Toaster } from "react-hot-toast";
 import ForgotPasswordOtp from "./pages/admin/ForgotPasswordOtp";
 import ResetPassword from "./pages/admin/ResetPassword";
+import AppLayout from "./layouts/AppLayout";
+import Profile from "./pages/admin/Profile";
+import Payout from "./pages/admin/Payout";
+import PaymentPages from "./pages/admin/PaymentPages";
 
 function App() {
   return (
@@ -34,7 +38,14 @@ function App() {
           />
           <Route path={routes.RESETPASSWORD} element={<ResetPassword />} />
         </Route>
-        <Route path={routes.DASHBOARD} element={<Dashboard />} />
+
+        <Route element={<AppLayout />}>
+          {" "}
+          <Route path="/*" element={<Dashboard />} />
+          <Route path={routes.PROFILE} element={<Profile />} />
+          <Route path={routes.PAYOUT} element={<Payout />} />
+          <Route path={routes.PAYMENTPAGES} element={<PaymentPages />} />
+        </Route>
       </Routes>
     </div>
   );

@@ -1,7 +1,6 @@
 import OnboardingOne from "../pages/admin/OnboardingOne";
 
 export const routes = {
-  DASHBOARD: "/dashboard",
   LOGIN: "/login",
   SIGNUP: "/signup",
   VERIFYEMAIL: "/verify-email",
@@ -11,4 +10,8 @@ export const routes = {
   FORGOTPASSWORD: "/forgot-password",
   FORGOTPASSWORDOTP: "/forgot-password-otp",
   RESETPASSWORD: "/reset-password",
+  DASHBOARD: "/dashboard",
+  PROFILE: "/profile",
+  PAYOUT: "/payout",
+  PAYMENTPAGES: "/payment-pages",
 };
