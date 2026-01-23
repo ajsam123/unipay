@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Outlet } from "react-router";
 import NavBar from "../components/NavBar";
 import Header from "../components/Header";
+import { useNavbar } from "../store/useNavbar";
 
 const AppLayout = () => {
+  const { navbar, setNavbar } = useNavbar((s) => s);
   return (
     <div className="flex h-screen relative">
-      <div className="sticky border-r h-screen border-sidebar-border">
+      <div className="sticky border-r h-screen border-sidebar-border md:flex hidden">
         <NavBar />
       </div>
       <main className="flex flex-1 h-screen flex-col overflow-y-auto scrollBar">
@@ -16,6 +18,7 @@ const AppLayout = () => {
         <div className="flex-1 bg-neutral-black-4 dark:bg-neutral-black-12  relative py-5 px-6 h-screen overflow-y-auto scrollBar">
           <Outlet />
         </div>
+        
       </main>
     </div>
   );

@@ -10,6 +10,7 @@ import Button from "../../components/Button";
 import { routes } from "./../../constants/routes.js";
 import { Link } from "react-router";
 import { onboardingSchema } from "../../schemas/onboarding.schema.js";
+import IDUpload from "../../components/SchoolIdUpload.jsx";
 const OnboardingOne = () => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,6 +91,7 @@ const OnboardingOne = () => {
           placeholder="Your department"
           error={errors.department?.message}
         />
+        <IDUpload />
         <Button isLoading={isLoading}>Next</Button>
       </form>
     </div>
