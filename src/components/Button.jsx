@@ -17,7 +17,7 @@ const Button = ({
       case "secondary":
         return "bg-neutral-black-7 text-white hover:bg-neutral-black-9";
       case "stroke":
-        return "border border-primary-400 text-primary-500 hover:bg-primary-100";
+        return "border border-sidebar-primary text-primary hover:bg-sidebar-primary/10";
       case "ghost":
         return "bg-transparent text-primary-500 hover:bg-primary-50";
       case "black":
@@ -25,7 +25,7 @@ const Button = ({
       case "signIn":
         return "bg-neutral-black-2 text-black hover:bg-neutral-black-9";
       case "red":
-        return "text-error-100 border-error-100 bg-error-500 hover:bg-transparent";
+        return "text-destructive-foreground border-destructive-foreground bg-transparent hover:bg-transparent";
 
       default:
         return "bg-primary text-white hover:bg-primary-400";
@@ -36,7 +36,7 @@ const Button = ({
     <button
       onClick={onClick}
       disabled={isLoading || isDisabled}
-      className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition hover:cursor-pointer
+      className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition hover:cursor-pointer h-10
         ${
           isDisabled
             ? "bg-neutral-black-5 text-neutral-black-8 cursor-not-allowed"

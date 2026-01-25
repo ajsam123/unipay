@@ -11,7 +11,7 @@ import { resetPasswordSchema } from "../../schemas/auth.schema.js";
 import { resetPassword } from "../../services/authService.js";
 
 const ResetPassword = () => {
-//   useEffect(() => {
+//   useEffect(() => {  
 //     if (!email || !otp) {
 //       toast.error("Session expired. Please start over.");
 //       navigate(routes.FORGOTPASSWORD);

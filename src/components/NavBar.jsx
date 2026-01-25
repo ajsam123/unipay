@@ -7,6 +7,7 @@ import {
   CreditCard,
   CircleUserRound,
 } from "lucide-react";
+import { useNavbar } from "../store/useNavbar";
 
 const NavBar = () => {
   // Define nav items in an array for cleaner mapping
@@ -32,7 +33,12 @@ const NavBar = () => {
       path: routes.PROFILE,
     },
   ];
-
+  const { navbar, setNavbar } = useNavbar((s) => s);
+  const handleNavbar = () => {
+    if (navbar) {
+      setNavbar(false);
+    }
+  };
   return (
     <div className="p-5 flex flex-col gap-4">
       <NavbarLogo />
@@ -43,6 +49,7 @@ const NavBar = () => {
             LinkTo={item.path}
             linkDesc={item.label}
             leftIcon={item.icon}
+            onClick={handleNavbar}
           />
         ))}
       </div>

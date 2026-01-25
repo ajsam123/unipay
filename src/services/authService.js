@@ -1,35 +1,56 @@
 import authApi from "../api/authApi.js";
 
 /* SIGNUP */
-export const signup = (data) => authApi.post("api/auth/register/", data);
+export const signup = async (data) => {
+  const res = await authApi.post("/api/auth/register/", data);
+  return res.data;
+};
 
+/* LOGIN */
 export const login = async (data) => {
-  const res = await authApi.post("api/auth/login/", data);
+  const res = await authApi.post("/api/auth/login/", data);
+  return res.data;
+};
 
-  localStorage.setItem("access", res.access_token);
-  localStorage.setItem("refresh", res.refresh_token);
+/* VERIFY EMAIL */
+export const verifyEmail = async (data) => {
+  const res = await authApi.post("/api/auth/verify-email/", data);
+
+  console.log(res);
+
+  const { access_token, refresh_token } = res.data;
+
+  localStorage.setItem("access", access_token);
+  localStorage.setItem("refresh", refresh_token);
+  console.log(res);
+  console.log(access_token, refresh_token);
 
   return res.data;
 };
 
-export const verifyEmail = (data) =>
-  authApi.post("/api/auth/verify-email/", data);
+/* VERIFY LOGIN OTP */
+export const verifyLoginOtp = async (data) => {
+  const res = await authApi.post("/api/auth/login/verify-otp/", data);
+  return res.data;
+};
 
-export const verifyLoginOtp = (data) =>
-  authApi.post("/api/auth/login/verify-otp/", data);
+/* FORGOT PASSWORD */
+export const forgotPassword = async (data) => {
+  const res = await authApi.post("/api/auth/forgot-password/", data);
+  return res.data;
+};
 
-export const forgotPassword = (data) => {
- authApi.post("/api/auth/forgot-password/", data)
-}
+/* RESET PASSWORD */
+export const resetPassword = async (data) => {
+  const res = await authApi.post("/api/auth/reset-password/", data);
+  return res.data;
+};
 
-export const resetPassword = (data) => {
- authApi.post("/api/auth/reset-password/", data)
-}
-
-export const resendOtp = (data) => authApi.post("/api/auth/resend-otp/", data);
-
-/* LOGIN */
-
+/* RESEND OTP */
+export const resendOtp = async (data) => {
+  const res = await authApi.post("/api/auth/resend-otp/", data);
+  return res.data;
+};
 
 /* CURRENT USER */
 export const getMe = async () => {
