@@ -16,21 +16,18 @@ export const login = async (data) => {
 export const verifyEmail = async (data) => {
   const res = await authApi.post("/api/auth/verify-email/", data);
 
-  console.log(res);
-
-  const { access_token, refresh_token } = res.data;
-
-  localStorage.setItem("access", access_token);
-  localStorage.setItem("refresh", refresh_token);
-  console.log(res);
-  console.log(access_token, refresh_token);
-
   return res.data;
 };
 
 /* VERIFY LOGIN OTP */
 export const verifyLoginOtp = async (data) => {
   const res = await authApi.post("/api/auth/login/verify-otp/", data);
+
+  const { access_token, refresh_token } = res.data;
+
+  localStorage.setItem("access", access_token);
+  localStorage.setItem("refresh", refresh_token);
+
   return res.data;
 };
 
