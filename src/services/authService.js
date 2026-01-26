@@ -43,6 +43,12 @@ export const resetPassword = async (data) => {
   return res.data;
 };
 
+/* FORGOT PASSWORD OTP */
+export const forgotPasswordOtp = async (data) => {
+  const res = await authApi.post("/api/auth/password/verify-otp/", data);
+  return res.data;
+};
+
 /* RESEND OTP */
 export const resendOtp = async (data) => {
   const res = await authApi.post("/api/auth/resend-otp/", data);

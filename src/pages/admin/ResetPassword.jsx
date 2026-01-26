@@ -11,18 +11,16 @@ import { resetPasswordSchema } from "../../schemas/auth.schema.js";
 import { resetPassword } from "../../services/authService.js";
 
 const ResetPassword = () => {
-//   useEffect(() => {  
-//     if (!email || !otp) {
-//       toast.error("Session expired. Please start over.");
-//       navigate(routes.FORGOTPASSWORD);
-//     }
-//   }, [email, otp, navigate]);
+  //   useEffect(() => {
+  //     if (!email || !otp) {
+  //       toast.error("Session expired. Please start over.");
+  //       navigate(routes.FORGOTPASSWORD);
+  //     }
+  //   }, [email, otp, navigate]);
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email;
-  const otp = location.state?.otp;
 
   const {
     handleSubmit,
@@ -37,15 +35,10 @@ const ResetPassword = () => {
   });
 
   const submitHandler = async (val) => {
-    const payload = {
-      ...val,
-      email: email,
-      otp: otp,
-    };
     try {
       setIsLoading(true);
 
-      await resetPassword(payload);
+      await resetPassword(val);
 
       toast.success("Password reset Successful. Redirecting to login...");
 

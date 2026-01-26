@@ -3,6 +3,7 @@ import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { forgotPasswordOtp } from "../../services/authService";
 
 const ForgotPasswordOtp = () => {
   const location = useLocation();
@@ -10,10 +11,12 @@ const ForgotPasswordOtp = () => {
   const email = location.state?.email;
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (data) => {
+  const handleSubmit = async (data) => {
     try {
       setIsLoading(true);
-      navigate(routes.RESETPASSWORD, { state: { email, otp: data } });
+      await forgotPasswordOtp({ email, otp: data });
+      toast.success("OTP verified successfully");
+      navigate(routes.RESETPASSWORD);
     } catch (error) {
       console.error(error);
       const message =
