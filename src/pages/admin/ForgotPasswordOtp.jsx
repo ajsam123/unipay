@@ -16,7 +16,7 @@ const ForgotPasswordOtp = () => {
       setIsLoading(true);
       await forgotPasswordOtp({ email, otp: data });
       toast.success("OTP verified successfully");
-      navigate(routes.RESETPASSWORD);
+      navigate(routes.RESETPASSWORD, { state: { email, otp: data } });
     } catch (error) {
       console.error(error);
       const message =

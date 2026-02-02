@@ -21,6 +21,8 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const email = location.state?.email;
+  const otp = location.state?.otp;
 
   const {
     handleSubmit,
@@ -36,9 +38,14 @@ const ResetPassword = () => {
 
   const submitHandler = async (val) => {
     try {
+      const payload = {
+        ...val,
+        otp_code: otp,
+        email,
+      };
       setIsLoading(true);
 
-      await resetPassword(val);
+      await resetPassword(payload);
 
       toast.success("Password reset Successful. Redirecting to login...");
 
