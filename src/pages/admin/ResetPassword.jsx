@@ -11,18 +11,18 @@ import { resetPasswordSchema } from "../../schemas/auth.schema.js";
 import { resetPassword } from "../../services/authService.js";
 
 const ResetPassword = () => {
-  //   useEffect(() => {
-  //     if (!email || !otp) {
-  //       toast.error("Session expired. Please start over.");
-  //       navigate(routes.FORGOTPASSWORD);
-  //     }
-  //   }, [email, otp, navigate]);
-
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
   const otp = location.state?.otp;
+
+  useEffect(() => {
+    if (!email || !otp) {
+      toast.error("Session expired. Please start over.");
+      navigate(routes.FORGOTPASSWORD);
+    }
+  }, [email, otp, navigate]);
 
   const {
     handleSubmit,

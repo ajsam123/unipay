@@ -1,5 +1,6 @@
 // api/api.js
 import axios from "axios";
+import authApi from "./authApi";
 
 const appApi = axios.create({
   baseURL: "https://student-rxt6.onrender.com",
@@ -8,7 +9,7 @@ const appApi = axios.create({
   },
 });
 
-api.interceptors.request.use(
+appApi.interceptors.request.use(
   (config) => {
     const access = localStorage.getItem("access");
 
@@ -18,11 +19,10 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
-
-api.interceptors.response.use(
+appApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -34,8 +34,8 @@ api.interceptors.response.use(
       try {
         const refresh = localStorage.getItem("refresh");
 
-        const res = await authApi.post("/api/auth/token/refresh/", {
-          refresh_token: refresh,
+        const res = await authApi.post("/api/token/refresh/", {
+          refresh: refresh,
         });
 
         const newAccess = res.data.access_token;
@@ -44,7 +44,7 @@ api.interceptors.response.use(
 
         originalRequest.headers.Authorization = `Bearer ${newAccess}`;
 
-        return api(originalRequest);
+        return appApi(originalRequest);
       } catch (refreshError) {
         localStorage.clear();
         window.location.href = "/login";
@@ -53,8 +53,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default appApi;
-

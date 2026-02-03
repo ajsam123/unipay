@@ -11,11 +11,14 @@ import { routes } from "./../../constants/routes.js";
 import { Link } from "react-router";
 import { onboardingSchema } from "../../schemas/onboarding.schema.js";
 import IDUpload from "../../components/SchoolIdUpload.jsx";
+import toast from "react-hot-toast";
+import { onboarding } from "../../services/appService.js";
 const OnboardingOne = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {
     handleSubmit,
+    setValue,
     register,
     formState: { errors },
   } = useForm({
@@ -25,7 +28,7 @@ const OnboardingOne = () => {
       matricNo: "",
       department: "",
       faculty: "",
-      schoolId: "",
+      idCardUrl: null,
     },
   });
 
@@ -33,9 +36,17 @@ const OnboardingOne = () => {
     try {
       setIsLoading(true);
       console.log(val);
+
+      await onboarding(val);
       // setError(null);
     } catch (error) {
       console.error(error);
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Invalid email or password";
+
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +102,17 @@ const OnboardingOne = () => {
           placeholder="Your department"
           error={errors.department?.message}
         />
-        <IDUpload />
+        <div>
+          <IDUpload
+            onImageUpload={(file) => {
+              setValue("idCardUrl", file, { shouldValidate: true });
+            }}
+          />
+
+          {errors.schoolId && (
+            <p className="text-red-500 text-xs">{errors.schoolId.message}</p>
+          )}
+        </div>
         <Button isLoading={isLoading}>Next</Button>
       </form>
     </div>

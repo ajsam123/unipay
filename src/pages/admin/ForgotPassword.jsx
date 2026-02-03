@@ -28,9 +28,9 @@ const ForgotPassword = () => {
   });
 
   const submitFunc = async (data) => {
-    console.log('This is the data:', data)
+    console.log("This is the data:", data);
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
       await forgotPassword(data);
 
@@ -39,7 +39,11 @@ const ForgotPassword = () => {
       navigate(routes.FORGOTPASSWORDOTP, { state: { email: data.email } });
     } catch (err) {
       console.log(err);
-      setError(err.response?.data || "Something went wrong");
+      const message =
+        err?.response?.data?.error ||
+        err?.response?.data?.email ||
+        "Error sending otp";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

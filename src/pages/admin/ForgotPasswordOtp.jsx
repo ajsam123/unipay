@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router";
 import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPasswordOtp } from "../../services/authService";
 
@@ -10,6 +10,13 @@ const ForgotPasswordOtp = () => {
   const navigate = useNavigate();
   const email = location.state?.email;
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!email) {
+      toast.error("Session expired. Please start over.");
+      navigate(routes.FORGOTPASSWORD);
+    }
+  }, [email, navigate]);
 
   const handleSubmit = async (data) => {
     try {

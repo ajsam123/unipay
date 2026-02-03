@@ -16,7 +16,7 @@ const VerifyEmailPage = () => {
       setIsLoading(true);
       await verifyEmail({ email, otp });
       toast.success("Email verified successfully");
-      navigate(routes.LOGIN);
+      navigate(routes.ONBOARDINGONE);
     } catch (error) {
       const message =
         error?.response?.data?.error ||

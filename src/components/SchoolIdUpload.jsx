@@ -12,7 +12,7 @@ const IDUpload = ({ onImageUpload }) => {
         const reader = new FileReader();
         reader.onload = () => {
           setPreview(reader.result);
-          // onImageUpload(file); // Send actual file to parent for Cloudinary/Backend
+          onImageUpload(file); // Send actual file to parent for Cloudinary/Backend
         };
         reader.readAsDataURL(file);
       }
@@ -29,6 +29,7 @@ const IDUpload = ({ onImageUpload }) => {
   const removeImage = (e) => {
     e.stopPropagation();
     setPreview(null);
+    onImageUpload(null);
   };
 
   return (

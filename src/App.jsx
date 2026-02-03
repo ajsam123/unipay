@@ -18,17 +18,17 @@ import AppLayout from "./layouts/AppLayout";
 import Profile from "./pages/admin/Profile";
 import Payout from "./pages/admin/Payout";
 import PaymentPages from "./pages/admin/PaymentPages";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
     <div>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top" reverseOrder={false} />
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path={routes.LOGIN} element={<Login />} />
           <Route path={routes.SIGNUP} element={<Signup />} />
           <Route path={routes.ONBOARDINGONE} element={<OnboardingOne />} />
-          <Route path={routes.ONBOARDINGTWO} element={<OnboardingTwo />} />
           <Route path={routes.FORGOTPASSWORD} element={<ForgotPassword />} />
           <Route path={routes.VERIFYEMAIL} element={<VerifyEmailPage />} />
           <Route path={routes.LOGINOTP} element={<LoginOtp />} />
@@ -38,13 +38,14 @@ function App() {
           />
           <Route path={routes.RESETPASSWORD} element={<ResetPassword />} />
         </Route>
-
-        <Route element={<AppLayout />}>
-          {" "}
-          <Route path="/*" element={<Dashboard />} />
-          <Route path={routes.PROFILE} element={<Profile />} />
-          <Route path={routes.PAYOUT} element={<Payout />} />
-          <Route path={routes.PAYMENTPAGES} element={<PaymentPages />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            {" "}
+            <Route path="/*" element={<Dashboard />} />
+            <Route path={routes.PROFILE} element={<Profile />} />
+            <Route path={routes.PAYOUT} element={<Payout />} />
+            <Route path={routes.PAYMENTPAGES} element={<PaymentPages />} />
+          </Route>
         </Route>
       </Routes>
     </div>
