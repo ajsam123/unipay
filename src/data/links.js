@@ -1,0 +1,48 @@
+export const userLinks = [
+  {
+    id: "link1",
+    dueName: "Second Semester Tuition",
+    amount: 150000,
+    link: "second-semester-tuition-1a2b3c...",
+    status: "Active",
+    collected: 2250000,
+    payers: 15,
+  },
+  {
+    id: "link2",
+    dueName: "Hostel Accommodation Fee",
+    amount: 75000,
+    link: "hostel-accommodation-fee-2x3y4z...",
+    status: "Active",
+    collected: 750000,
+    payers: 10,
+  },
+  {
+    id: "link3",
+    dueName: "Sports Development Fee",
+    amount: 25000,
+    link: "sports-development-fee-5m6n7o...",
+    status: "Active",
+    collected: 0,
+    payers: 0,
+  },
+  {
+    id: "link4",
+    dueName: "Library Card Registration",
+    amount: 10000,
+    link: "library-card-registration-8p9q0r...",
+    status: "Paused",
+    collected: 150000,
+    payers: 15,
+  },
+  {
+    id: "link5",
+    dueName: "First Semester Tuition 2023",
+    amount: 150000,
+    link: "first-semester-tuition-2023-1s2t3u...",
+    status: "Completed",
+    collected: 4050000,
+    payers: 27,
+  },
+  // ... more mock links
+];
