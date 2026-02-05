@@ -4,7 +4,7 @@ const PaymentPages = () => {
   return (
     <>
       <div className="flex w-full justify-between">
-        <div>
+        <div className="flex flex-col gap-3">
           <span className="body-medium-medium">Create new Link</span>
           <span className="body-small-semibold">
             Generate payment links to collect fees from students

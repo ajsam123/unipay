@@ -1,29 +1,26 @@
-import { useLocation, useNavigate } from "react-router";
+import { useRouterState, useRouter } from "@tanstack/react-router";
 import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPasswordOtp } from "../../services/authService";
 
 const ForgotPasswordOtp = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const email = location.state?.email;
+  const { email } = useRouterState({
+    select: (state) => state.location.search,
+  });
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!email) {
-      toast.error("Session expired. Please start over.");
-      navigate(routes.FORGOTPASSWORD);
-    }
-  }, [email, navigate]);
 
   const handleSubmit = async (data) => {
     try {
       setIsLoading(true);
       await forgotPasswordOtp({ email, otp: data });
       toast.success("OTP verified successfully");
-      navigate(routes.RESETPASSWORD, { state: { email, otp: data } });
+      router.navigate({
+        to: routes.RESETPASSWORD,
+        search: { email, otp: data },
+      });
     } catch (error) {
       console.error(error);
       const message =

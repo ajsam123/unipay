@@ -1,11 +1,13 @@
 import { HamburgerIcon } from "lucide-react";
-import { useLocation } from "react-router";
+import { useRouterState } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { useNavbar } from "../store/useNavbar";
 
 const Header = () => {
   const { setNavbar } = useNavbar((s) => s);
-  const location = useLocation();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
   const pageTitles = {
     "/dashboard": "Dashboard",
@@ -16,7 +18,7 @@ const Header = () => {
     "/": "Dashboard",
   };
 
-  const currentTitle = pageTitles[location.pathname] || "Dashoard";
+  const currentTitle = pageTitles[pathname] || "Dashoard";
 
   return (
     <div className="border-b py-4 px-3 border-sidebar-border flex items-center gap-4">

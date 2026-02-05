@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 import { verifyEmail, resendOtp } from "../../services/authService";
 import OtpForm from "../../components/OtpForm";
 import toast from "react-hot-toast";
@@ -6,22 +6,30 @@ import { routes } from "../../constants/routes";
 import { useState } from "react";
 
 const VerifyEmailPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const email = location.state?.email;
+  const router = useRouter();
+  const { email } = useRouterState({
+    select: (state) => state.location.search,
+  });
   const [isLoading, setIsLoading] = useState(false);
+
 
   const handleVerify = async (otp, setError) => {
     try {
       setIsLoading(true);
+
       await verifyEmail({ email, otp });
+
       toast.success("Email verified successfully");
-      navigate(routes.ONBOARDINGONE);
+
+      router.navigate({
+        to: routes.ONBOARDINGONE,
+      });
     } catch (error) {
       const message =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
         "Invalid or expired OTP";
+
       setError(message);
       toast.error(message);
     } finally {
@@ -32,13 +40,15 @@ const VerifyEmailPage = () => {
   const handleResend = async () => {
     try {
       setIsLoading(true);
+
       await resendOtp({ email });
+
       toast.success("OTP resent");
     } catch (error) {
       toast.error(
         error?.response?.data?.error ||
           error?.response?.data?.message ||
-          "Something went wrong"
+          "Something went wrong",
       );
     } finally {
       setIsLoading(false);

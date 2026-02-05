@@ -4,7 +4,7 @@ import mail from "./../../assets/mail-01.svg";
 import lock from "./../../assets/lock-03.svg";
 import Button from "../../components/Button";
 import { routes } from "./../../constants/routes.js";
-import { Link, useNavigate } from "react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schema.js";
@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const submitHandler = async (data) => {
     try {
@@ -21,8 +21,11 @@ const Signup = () => {
 
       await signup(data);
 
-      navigate(routes.VERIFYEMAIL, {
-        state: { email: data.email },
+      router.navigate({
+        to: routes.VERIFYEMAIL,
+        search: {
+          email: data.email,
+        },
       });
     } catch (error) {
       const message =
@@ -120,7 +123,10 @@ const Signup = () => {
       <div className="text-center flex flex-col gap-4">
         <span>
           Already have an account?{" "}
-          <Link className="text-neutral-black-9" to={routes.LOGIN}>
+          <Link
+            className="text-neutral-black-9"
+            to={routes.LOGIN}
+          >
             Log in
           </Link>
         </span>

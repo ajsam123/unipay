@@ -1,28 +1,32 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter, useRouterState } from "@tanstack/react-router";
+
 import Input from "../../components/Input";
-import lock from "./../../assets/lock-03.svg";
 import Button from "../../components/Button";
-import { routes } from "./../../constants/routes.js";
-import { Link, useLocation, useNavigate } from "react-router";
+import lock from "./../../assets/lock-03.svg";
 import toast from "react-hot-toast";
+
+import { routes } from "../../constants/routes.js";
 import { resetPasswordSchema } from "../../schemas/auth.schema.js";
 import { resetPassword } from "../../services/authService.js";
 
 const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email;
-  const otp = location.state?.otp;
 
+  const router = useRouter();
+  const { email, otp } = useRouterState({
+    select: (state) => state.location.search,
+  });
+
+  // Guard: user should not access this page directly
   useEffect(() => {
     if (!email || !otp) {
       toast.error("Session expired. Please start over.");
-      navigate(routes.FORGOTPASSWORD);
+      router.navigate({ to: routes.FORGOTPASSWORD });
     }
-  }, [email, otp, navigate]);
+  }, [email, otp, router]);
 
   const {
     handleSubmit,
@@ -38,23 +42,25 @@ const ResetPassword = () => {
 
   const submitHandler = async (val) => {
     try {
+      setIsLoading(true);
+
       const payload = {
         ...val,
         otp_code: otp,
         email,
       };
-      setIsLoading(true);
 
       await resetPassword(payload);
 
-      toast.success("Password reset Successful. Redirecting to login...");
+      toast.success("Password reset successful. Redirecting to login...");
 
-      navigate(routes.LOGIN);
+      router.navigate({ to: routes.LOGIN });
     } catch (error) {
       const message =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
         "Something went wrong";
+
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -87,6 +93,7 @@ const ResetPassword = () => {
           placeholder="Enter new password"
           error={errors.new_password?.message}
         />
+
         <Input
           {...register("confirm_new_password")}
           leftIcon={<img src={lock} alt="lock icon" />}

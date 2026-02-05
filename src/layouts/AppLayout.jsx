@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router";
+import { Outlet } from "@tanstack/react-router";
 import NavBar from "../components/NavBar";
 import Header from "../components/Header";
 import { useNavbar } from "../store/useNavbar";

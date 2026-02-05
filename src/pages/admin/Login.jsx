@@ -1,19 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter, Link } from "@tanstack/react-router";
+
 import Input from "../../components/Input";
+import Button from "../../components/Button";
 import mail from "./../../assets/mail-01.svg";
 import lock from "./../../assets/lock-03.svg";
-import Button from "../../components/Button";
-import { routes } from "./../../constants/routes.js";
-import { Link, useNavigate } from "react-router";
+import { routes } from "../../constants/routes.js";
 import { loginschema } from "../../schemas/auth.schema.js";
 import { login } from "../../services/authService.js";
 import toast from "react-hot-toast";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter(); // use TanStack Router
 
   const {
     handleSubmit,
@@ -35,8 +36,10 @@ const Login = () => {
 
       toast.success("OTP sent to your email");
 
-      navigate(routes.LOGINOTP, {
-        state: { email: val.email },
+      // Navigate to Login OTP page using search params
+      router.navigate({
+        to: routes.LOGINOTP,
+        search: { email: val.email },
       });
     } catch (error) {
       const message =

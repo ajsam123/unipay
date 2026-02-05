@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import mail from "./../../assets/mail-01.svg";
 import chevron from "./../../assets/chevron-left.svg";
-import { Link, useNavigate } from "react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { routes } from "../../constants/routes";
 import { forgotPasswordSchema } from "../../schemas/auth.schema";
 import Input from "../../components/Input";
@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -36,7 +36,10 @@ const ForgotPassword = () => {
 
       setError(null);
       toast.success("OTP sent to Email");
-      navigate(routes.FORGOTPASSWORDOTP, { state: { email: data.email } });
+      router.navigate({
+        to: routes.FORGOTPASSWORDOTP,
+        search: { email: data.email },
+      });
     } catch (err) {
       console.log(err);
       const message =

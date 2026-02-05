@@ -13,8 +13,10 @@ import { onboardingSchema } from "../../schemas/onboarding.schema.js";
 import IDUpload from "../../components/SchoolIdUpload.jsx";
 import toast from "react-hot-toast";
 import { onboarding } from "../../services/appService.js";
+import { useRouter } from "@tanstack/react-router";
 const OnboardingOne = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter(); // use TanStack Router
 
   const {
     handleSubmit,
@@ -38,7 +40,8 @@ const OnboardingOne = () => {
       console.log(val);
 
       await onboarding(val);
-      // setError(null);
+
+      router.navigate({ to: routes.LOGIN });
     } catch (error) {
       console.error(error);
       const message =

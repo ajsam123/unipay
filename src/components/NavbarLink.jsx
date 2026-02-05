@@ -1,6 +1,5 @@
 import React from "react";
-import { Link } from "react-router";
-import { useLocation } from "react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 
 const NavbarLink = ({
   leftIcon,
@@ -9,12 +8,11 @@ const NavbarLink = ({
   rightIcon = null,
   onClick,
 }) => {
-  console.log(leftIcon);
-  const location = useLocation();
-  const currentPath = location.pathname;
-  // console.log(LinkTo, currentPath);
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
-  const isActive = LinkTo === currentPath;
+  const isActive = pathname.startsWith(LinkTo);
 
   return (
     <Link
