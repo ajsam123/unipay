@@ -28,6 +28,7 @@ import PaymentPages from "./pages/admin/PaymentPages";
 // constants
 import { routes } from "./constants/routes";
 import z from "zod";
+import TransactionsPage from "./pages/admin/TransactionsPage";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -166,6 +167,11 @@ const paymentPagesRoute = createRoute({
   path: routes.PAYMENTPAGES,
   component: PaymentPages,
 });
+const transactionsPageRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: routes.TRANSACTION,
+  component: TransactionsPage,
+});
 
 /* ================= ROUTE TREE ================= */
 
@@ -185,6 +191,7 @@ const routeTree = rootRoute.addChildren([
     profileRoute,
     payoutRoute,
     paymentPagesRoute,
+    transactionsPageRoute,
   ]),
 ]);
 

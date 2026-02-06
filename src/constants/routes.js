@@ -14,4 +14,5 @@ export const routes = {
   PROFILE: "/profile",
   PAYOUT: "/payout",
   PAYMENTPAGES: "/payment-pages",
+  TRANSACTION: "/payment-pages/:linkId",
 };

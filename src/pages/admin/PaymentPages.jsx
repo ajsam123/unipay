@@ -1,5 +1,6 @@
 import TransactionTable from "../../tables/TransactionTable";
 import Button from "../../components/Button";
+import LinkTable from "../../tables/LinkTable";
 
 const PaymentPages = () => {
   return (
@@ -15,7 +16,7 @@ const PaymentPages = () => {
       </div>
       <div className="flex flex-col gap-3">
         <div>All Payment Links</div>
-        <TransactionTable />
+        <LinkTable />
       </div>
     </section>
   );
