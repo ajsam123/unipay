@@ -1,5 +1,3 @@
-import OnboardingOne from "../pages/admin/OnboardingOne";
-
 export const routes = {
   LOGIN: "/login",
   SIGNUP: "/signup",
@@ -14,5 +12,5 @@ export const routes = {
   PROFILE: "/profile",
   PAYOUT: "/payout",
   PAYMENTPAGES: "/payment-pages",
-  TRANSACTION: "/payment-pages/:linkId",
+  TRANSACTION: "/payment-pages/$linkId",
 };

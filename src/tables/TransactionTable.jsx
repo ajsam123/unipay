@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -19,7 +19,10 @@ import { transactions } from "../data/paymentTable";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
-  const filteredTransactions = transactions.map((x) => x.linkId === linkId);
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((x) => x.linkId === linkId);
+  }, [linkId]);
+
   const columns = [
     {
       accessorKey: "fullName",
@@ -62,45 +65,45 @@ const TransactionTable = ({ linkId }) => {
     },
   });
 
-  console.log(table);
-
   return (
-    <Table>
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <TableHead
-                key={header.id}
-                className="cursor-pointer"
-                onClick={header.column.getToggleSortingHandler()}
-              >
-                {header.column.columnDef.header}
-                {{
-                  asc: " 🔼",
-                  desc: " 🔽",
-                }[header.column.getIsSorted()] ?? null}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
+    <>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className="cursor-pointer"
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  {header.column.columnDef.header}
+                  {{
+                    asc: " 🔼",
+                    desc: " 🔽",
+                  }[header.column.getIsSorted()] ?? null}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-      <TableBody>
-        {table.getRowModel().rows.map((row) => (
-          <TableRow key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id}>
-                {cell.column.id === "amountPaid"
-                  ? `₦${cell.getValue().toLocaleString()}`
-                  : cell.column.id === "datePaid"
-                    ? new Date(cell.getValue()).toLocaleDateString("en-GB")
-                    : cell.getValue()}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {cell.column.id === "amountPaid"
+                    ? `₦${cell.getValue().toLocaleString()}`
+                    : cell.column.id === "datePaid"
+                      ? new Date(cell.getValue()).toLocaleDateString("en-GB")
+                      : cell.getValue()}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-between px-2 py-4">
         <div className="text-sm text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
@@ -125,7 +128,7 @@ const TransactionTable = ({ linkId }) => {
           </button>
         </div>
       </div>
-    </Table>
+    </>
   );
 };
 

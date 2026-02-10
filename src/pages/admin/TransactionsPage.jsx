@@ -1,9 +1,8 @@
-import { Route } from "@/routes/payment-pages/$linkId";
 import TransactionTable from "../../tables/TransactionTable";
-import { routes } from "../../constants/routes";
+import { transactionsPageRoute } from "../../Router.jsx";
 
 const TransactionsPage = () => {
-  const { linkId } = Route.useParams();
+  const { linkId } = transactionsPageRoute.useParams();
   return (
     <div>
       <TransactionTable linkId={linkId} />

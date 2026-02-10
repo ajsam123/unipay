@@ -21,7 +21,7 @@ const Header = () => {
   const currentTitle = pageTitles[pathname] || "Dashoard";
 
   return (
-    <div className="border-b py-4 px-3 border-sidebar-border flex items-center gap-4">
+    <div className="border-b z-0 py-4 px-3 border-sidebar-border flex items-center gap-4">
       <button onClick={() => setNavbar(true)} className="flex md:hidden">
         <Menu icon={20} />
       </button>

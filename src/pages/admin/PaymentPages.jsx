@@ -1,8 +1,10 @@
-import TransactionTable from "../../tables/TransactionTable";
 import Button from "../../components/Button";
 import LinkTable from "../../tables/LinkTable";
+import { useModalStore } from "../../store/modalStore";
+import CreatePaymentLinkForm from "../../components/CreatePaymentLinkForm";
 
 const PaymentPages = () => {
+  const { openModal } = useModalStore((s) => s);
   return (
     <section className="flex flex-col gap-4">
       <div className="flex w-full justify-between">
@@ -12,7 +14,16 @@ const PaymentPages = () => {
             Generate payment links to collect fees from students
           </span>
         </div>
-        <Button>Create payment Link</Button>
+        <Button
+          onClick={() =>
+            openModal({
+              title: "Create Payment Link",
+              content: <CreatePaymentLinkForm />,
+            })
+          }
+        >
+          Create payment Link
+        </Button>
       </div>
       <div className="flex flex-col gap-3">
         <div>All Payment Links</div>

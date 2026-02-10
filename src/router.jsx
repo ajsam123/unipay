@@ -167,7 +167,7 @@ const paymentPagesRoute = createRoute({
   path: routes.PAYMENTPAGES,
   component: PaymentPages,
 });
-const transactionsPageRoute = createRoute({
+export const transactionsPageRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: routes.TRANSACTION,
   component: TransactionsPage,

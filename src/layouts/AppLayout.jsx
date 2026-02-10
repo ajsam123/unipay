@@ -9,7 +9,7 @@ const AppLayout = () => {
     <div className="flex h-screen relative">
       <div
         className={`
-          fixed inset-0 z-9999 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden
+          fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden
           ${navbar ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}
         `}
         onClick={() => setNavbar(false)}
@@ -18,7 +18,7 @@ const AppLayout = () => {
         className={` border-r h-screen  bg-white ${navbar ? "border-transparent" : "border-sidebar-border"}  
       
       /* --- Mobile Styles (Drawer Mode) --- */
-          fixed top-0 z-999999 w-64 
+          fixed top-0 z-50 w-64 
           transition-transform duration-300 ease-in-out
           
           /* --- Desktop Styles (Sticky Mode) --- */
