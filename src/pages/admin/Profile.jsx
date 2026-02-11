@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 const Profile = () => {
   return (
     <div className="p-6 bg-white rounded-lg flex gap-6 w-full flex-col">
-      <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-border  pb-6 ">
+      <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5  pb-6 ">
         <ProfileUserInfo
           title="Profile"
           body="Your personal information and account 
@@ -38,28 +38,17 @@ const Profile = () => {
           />
         </div>
       </div>
-      <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5 dark:border-neutral-800 pb-6">
+      <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5 dark:border-neutral-800 pb-6 flex justify-between">
         <ProfileUserInfo
-          title="Language & Region"
-          body="Customize your language and region."
+          title="Bank details"
+          body="Enter bank details required for payouts"
           className="w-full"
         />
-        {/* <div className="w-full lg:flex gap-2 col-span-2">
-          <Input
-            className="w-full"
-            label="Email"
-            placeholder="English"
-            disabled
-            leftIcon={<Globe size={20} />}
-          />
-          <Input
-            className="w-full"
-            label="Time Zone"
-            placeholder=""
-            disabled
-            leftIcon={<img src={markerPin} />}
-          />
-        </div> */}
+        <div>
+          <Button variant="outline" className="w-full">
+            Add Bank details
+          </Button>
+        </div>
       </div>
       <div className="lg:grid grid-cols-3 lg:gap-10 gap-5 flex flex-col">
         <ProfileUserInfo title="Danger zone" body="Proceed with Caution" />
