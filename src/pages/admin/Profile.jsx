@@ -2,8 +2,11 @@ import { Lock, LogOut, Mail, User, UserX } from "lucide-react";
 import Input from "../../components/Input";
 import ProfileUserInfo from "../../components/ProfileUserInfo";
 import Button from "../../components/Button";
+import { useModalStore } from "../../store/modalStore";
+import BankDetailsForm from "../../components/BankDetailsForm";
 
 const Profile = () => {
+  const { openModal } = useModalStore((s) => s);
   return (
     <div className="p-6 bg-white rounded-lg flex gap-6 w-full flex-col">
       <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5  pb-6 ">
@@ -38,14 +41,23 @@ const Profile = () => {
           />
         </div>
       </div>
-      <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5 dark:border-neutral-800 pb-6 flex justify-between">
+      <div className="w-full border-b border-neutral-black-5 dark:border-neutral-800 pb-6 flex justify-between">
         <ProfileUserInfo
           title="Bank details"
           body="Enter bank details required for payouts"
           className="w-full"
         />
         <div>
-          <Button variant="outline" className="w-full">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() =>
+              openModal({
+                title: "Bank details",
+                content: <BankDetailsForm />,
+              })
+            }
+          >
             Add Bank details
           </Button>
         </div>
