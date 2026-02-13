@@ -8,7 +8,7 @@ import BankDetailsForm from "../../components/BankDetailsForm";
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
   return (
-    <div className="p-6 bg-white rounded-lg flex gap-6 w-full flex-col">
+    <div className="bg-white rounded-lg flex gap-6 w-full flex-col ">
       <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5  pb-6 ">
         <ProfileUserInfo
           title="Profile"
@@ -41,26 +41,25 @@ const Profile = () => {
           />
         </div>
       </div>
-      <div className="w-full border-b border-neutral-black-5 dark:border-neutral-800 pb-6 flex justify-between">
+      <div className="w-full border-b border-neutral-black- pb-6 flex md:justify-between md:flex-row flex-col gap-5">
         <ProfileUserInfo
           title="Bank details"
           body="Enter bank details required for payouts"
-          className="w-full"
+          className=""
         />
-        <div>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() =>
-              openModal({
-                title: "Bank details",
-                content: <BankDetailsForm />,
-              })
-            }
-          >
-            Add Bank details
-          </Button>
-        </div>
+
+        <Button
+          variant="outline"
+          className="w-full max-w-40"
+          onClick={() =>
+            openModal({
+              title: "Bank details",
+              content: <BankDetailsForm />,
+            })
+          }
+        >
+          Add Bank details
+        </Button>
       </div>
       <div className="lg:grid grid-cols-3 lg:gap-10 gap-5 flex flex-col">
         <ProfileUserInfo title="Danger zone" body="Proceed with Caution" />

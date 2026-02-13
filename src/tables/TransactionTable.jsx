@@ -16,12 +16,18 @@ import {
 } from "@tanstack/react-table";
 
 import { transactions } from "../data/paymentTable";
+import { exportTransactionsPDF } from "../utils/exportTransactionPdf";
+import Button from "../components/Button";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
   const filteredTransactions = useMemo(() => {
     return transactions.filter((x) => x.linkId === linkId);
   }, [linkId]);
+
+  const handleTransactions = () => {
+    exportTransactionsPDF(filteredTransactions, linkId);
+  };
 
   const columns = [
     {
@@ -127,6 +133,9 @@ const TransactionTable = ({ linkId }) => {
             Next
           </button>
         </div>
+      </div>
+      <div>
+        <Button onClick={handleTransactions}>Export Pdf</Button>
       </div>
     </>
   );

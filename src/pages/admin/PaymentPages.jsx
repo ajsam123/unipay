@@ -7,7 +7,7 @@ const PaymentPages = () => {
   const { openModal } = useModalStore((s) => s);
   return (
     <section className="flex flex-col gap-4">
-      <div className="flex w-full justify-between">
+      <div className="flex w-full md:justify-between flex-col gap-4 md:flex-row">
         <div className="flex flex-col gap-3">
           <span className="body-medium-medium">Create new Link</span>
           <span className="body-small-semibold">
@@ -15,6 +15,7 @@ const PaymentPages = () => {
           </span>
         </div>
         <Button
+        className="w-full max-w-45"
           onClick={() =>
             openModal({
               title: "Create Payment Link",
