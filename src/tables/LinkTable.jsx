@@ -13,15 +13,21 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
+  flexRender,
 } from "@tanstack/react-table";
 
 import { userLinks } from "../data/links";
 import { useState } from "react";
 import { routes } from "../constants/routes.js";
+import Button from "../components/Button.jsx";
+import { MoreVertical } from "lucide-react";
+import { useModalStore } from "../store/modalStore.js";
+import ActionModal from "../components/ActionModal.jsx";
 
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
+  const { openModal } = useModalStore((s) => s);
 
   const columns = [
     {
@@ -49,6 +55,37 @@ const LinkTable = () => {
     {
       accessorKey: "payers",
       header: "Payers",
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const link = row.original;
+
+        return (
+          <ActionModal
+            actions={[
+              {
+                label: "View",
+                onClick: () =>
+                  navigate({
+                    to: routes.TRANSACTION,
+                    params: { linkId: link.id },
+                  }),
+              },
+              {
+                label: "Edit",
+                onClick: () => console.log("Edit", link.id),
+              },
+              {
+                label: "Delete",
+                color: "red",
+                onClick: () => console.log("Delete", link.id),
+              },
+            ]}
+          />
+        );
+      },
     },
   ];
 
@@ -107,11 +144,7 @@ const LinkTable = () => {
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {cell.column.id === "amountPaid"
-                      ? `₦${Number(cell.getValue()).toLocaleString()}`
-                      : cell.column.id === "datePaid"
-                        ? new Date(cell.getValue()).toLocaleDateString("en-GB")
-                        : cell.getValue()}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
