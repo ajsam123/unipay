@@ -25,7 +25,7 @@ const Button = ({
       case "signIn":
         return "bg-neutral-black-2 text-black hover:bg-neutral-black-9";
       case "red":
-        return "text-destructive-foreground border-destructive-foreground bg-transparent hover:bg-transparent";
+        return "text-destructive-foreground border border-destructive-foreground bg-transparent hover:bg-transparent";
 
       default:
         return "bg-primary text-white hover:bg-primary-400";

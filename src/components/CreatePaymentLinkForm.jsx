@@ -4,8 +4,13 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { useModalStore } from "../store/modalStore";
 import { createPaymentLinkSchema } from "../schemas/createPayment.schema";
+import useLinkStore from "../store/useLinkStore";
+import toast from "react-hot-toast";
 
 const CreatePaymentLinkForm = () => {
+  const { addLink } = useLinkStore((s) => s);
+  const { closeModal } = useModalStore((s) => s);
+
   const {
     register,
     handleSubmit,
@@ -19,7 +24,18 @@ const CreatePaymentLinkForm = () => {
       ...data,
       amount: Number(data.amount),
     });
+    addLink({
+      id: "link7",
+      dueName: data.title,
+      amount: data.amount,
+      link: "nfjndffe",
+      status: "Active",
+      collected: 0,
+      payers: 10,
+    });
 
+    closeModal();
+    toast.success("Payment Link created succesfully");
     // later: API call here
   };
 
