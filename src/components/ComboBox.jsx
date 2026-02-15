@@ -57,31 +57,35 @@ const Combobox = ({
           </div>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-xl z-9999 border-none overflow-y-scroll">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0 rounded-xl z-9999 border-none touch-auto"
+          style={{ maxHeight: 250 }} // max height in px
+        >
           <Command>
             <CommandInput placeholder="Search..." />
             <CommandEmpty>No option found.</CommandEmpty>
-
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.code}
-                  value={option.name}
-                  onSelect={() => {
-                    onChange(option.code);
-                    setOpen(false);
-                  }}
-                >
-                  {option.name}
-                  <Check
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      value === option.code ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <div className="overflow-y-auto max-h-[200px]">
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.code}
+                    value={option.name}
+                    onSelect={() => {
+                      onChange(option.code);
+                      setOpen(false);
+                    }}
+                  >
+                    {option.name}
+                    <Check
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        value === option.code ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </div>
           </Command>
         </PopoverContent>
       </Popover>

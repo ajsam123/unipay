@@ -4,9 +4,20 @@ import Input from "../components/Input";
 import Combobox from "../components/ComboBox";
 import Button from "../components/Button";
 import { bankDetailsSchema } from "../schemas/bankDetails.schema";
-import { dummyBanks } from "../data/dummyBank";
+import { useQuery } from "@tanstack/react-query";
+import { getBanks } from "../services/appService";
 
 const BankDetailsForm = () => {
+  const {
+    data: banks,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["banks"],
+    queryFn: getBanks,
+    staleTime: Infinity,
+  });
+
   const {
     register,
     handleSubmit,
@@ -38,10 +49,16 @@ const BankDetailsForm = () => {
         render={({ field }) => (
           <Combobox
             label="Bank"
-            options={dummyBanks}
+            options={banks}
             value={field.value}
             onChange={field.onChange}
-            placeholder="Select your bank"
+            placeholder={
+              isLoading
+                ? "Loading banks..."
+                : isError
+                  ? "Failed to load banks"
+                  : "Select your bank"
+            }
             error={errors.bankCode?.message}
           />
         )}
