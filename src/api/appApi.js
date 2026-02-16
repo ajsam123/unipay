@@ -38,7 +38,7 @@ appApi.interceptors.response.use(
           refresh: refresh,
         });
 
-        const newAccess = res.data.access_token;
+        const newAccess = res.data.access;
 
         localStorage.setItem("access", newAccess);
 

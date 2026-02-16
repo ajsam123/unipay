@@ -17,7 +17,7 @@ export default function Modal() {
 
   return (
     <Dialog open={open} onOpenChange={closeModal}>
-      <DialogContent className="sm:max-w-lg rounded-2xl border-none">
+      <DialogContent className="sm:max-w-lg w-full rounded-2xl border-none overflow-visible">
         {/* Optional header */}
         {(title || description) && (
           <DialogHeader>
@@ -29,7 +29,7 @@ export default function Modal() {
         )}
 
         {/* Modal body */}
-        <div className="py-2">{content}</div>
+        <div className="py-2 w-full min-w-0">{content}</div>
 
         {/* Optional footer */}
         {footer && <DialogFooter>{footer}</DialogFooter>}
