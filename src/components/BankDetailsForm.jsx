@@ -8,9 +8,17 @@ import Combobox from "../components/ComboBox";
 import Button from "../components/Button";
 
 import { bankDetailsSchema } from "../schemas/bankDetails.schema";
-import { getBanks, resolveAccount } from "../services/appService";
+import {
+  getBanks,
+  resolveAccount,
+  createSubaccount,
+} from "../services/appService";
+import toast from "react-hot-toast";
+import { useModalStore } from "../store/modalStore";
 
 const BankDetailsForm = () => {
+  const { closeModal } = useModalStore((s) => s);
+
   /* -------------------- Fetch Banks -------------------- */
   const { data: banks = [] } = useQuery({
     queryKey: ["banks"],
@@ -31,7 +39,7 @@ const BankDetailsForm = () => {
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     resolver: zodResolver(bankDetailsSchema),
-    mode: "onChange",
+    mode: "all", // validates on submit + change
     defaultValues: {
       bankCode: "",
       accountNumber: "",
@@ -44,12 +52,35 @@ const BankDetailsForm = () => {
   /* -------------------- Resolve Account Mutation -------------------- */
   const resolveMutation = useMutation({
     mutationFn: resolveAccount,
+    onSuccess: (data) => {
+      toast.success("Account verified successfully");
+    },
+    onError: () => {
+      toast.error("Failed to verify account");
+    },
   });
 
-  /* -------------------- Auto Resolve When Valid -------------------- */
+  /* -------------------- Create Subaccount Mutation -------------------- */
+  const createSubaccountMutation = useMutation({
+    mutationFn: createSubaccount,
+    onSuccess: () => {
+      toast.success("Account added successfully");
+      closeModal();
+    },
+    onError: (error) => {
+      console.error("Failed to create subaccount:", error);
+      toast.error("Failed to add account");
+    },
+  });
+
+  /* -------------------- Auto Resolve on 10-digit Account -------------------- */
   useEffect(() => {
-    if (bankCode && accountNumber?.length === 10) {
-      console.log("Attempting resolve:", { bankCode, accountNumber });
+    if (
+      bankCode &&
+      accountNumber?.length === 10 &&
+      (!resolveMutation.data ||
+        resolveMutation.data.account_number !== accountNumber)
+    ) {
       resolveMutation.mutate({
         bank_code: bankCode,
         account_number: accountNumber,
@@ -59,20 +90,46 @@ const BankDetailsForm = () => {
 
   /* -------------------- Derived States -------------------- */
   const isAccountVerified =
-    resolveMutation.isSuccess && resolveMutation.data?.account_name;
+    resolveMutation.isSuccess && resolveMutation.data?.accountName;
 
   const isButtonDisabled =
-    !isValid || resolveMutation.isPending || !isAccountVerified || isSubmitting;
+    !isValid ||
+    resolveMutation.isPending ||
+    (!isAccountVerified && accountNumber?.length < 10) ||
+    isSubmitting ||
+    createSubaccountMutation.isPending;
 
-  /* -------------------- Submit -------------------- */
-  const onSubmit = async (data) => {
-    console.log("Final submission:", {
-      ...data,
-      accountName: resolveMutation.data?.account_name,
+  /* -------------------- Handlers -------------------- */
+  const handleVerify = () => {
+    if (!bankCode || accountNumber?.length !== 10) {
+      toast.error("Please select a bank and enter a 10-digit account number");
+      return;
+    }
+    resolveMutation.mutate({
+      bank_code: bankCode,
+      account_number: accountNumber,
     });
-
-    // 👉 Next step: create subaccount here
   };
+
+  const onSubmit = (data) => {
+    if (!isAccountVerified) return;
+
+    createSubaccountMutation.mutate({
+      bank_code: data.bankCode,
+      account_number: data.accountNumber,
+      title: resolveMutation.data.accountName,
+      percentage_charge: 0,
+    });
+  };
+
+  /* -------------------- Button Label -------------------- */
+  const buttonLabel = resolveMutation.isPending
+    ? "Verifying..."
+    : !isAccountVerified
+      ? "Verify"
+      : createSubaccountMutation.isPending
+        ? "Creating..."
+        : "Add Bank";
 
   /* -------------------- UI -------------------- */
   return (
@@ -110,24 +167,23 @@ const BankDetailsForm = () => {
       {resolveMutation.isPending && (
         <p className="text-sm text-gray-500">Verifying account...</p>
       )}
-
       {isAccountVerified && (
         <p className="text-sm text-green-600">
-          Account Name: {resolveMutation.data.account_name}
+          Account Verified: {resolveMutation.data.accountName}
         </p>
       )}
-
       {resolveMutation.isError && (
         <p className="text-sm text-red-500">Failed to verify account</p>
       )}
 
-      {/* Submit Button */}
-      <Button type="submit" className="w-full" disabled={isButtonDisabled}>
-        {isSubmitting
-          ? "Submitting..."
-          : resolveMutation.isPending
-            ? "Verifying..."
-            : "Continue"}
+      {/* Submit / Verify Button */}
+      <Button
+        type={isAccountVerified ? "submit" : "button"}
+        onClick={!isAccountVerified ? handleVerify : undefined}
+        className="w-full"
+        disabled={isButtonDisabled}
+      >
+        {buttonLabel}
       </Button>
     </form>
   );

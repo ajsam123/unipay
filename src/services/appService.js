@@ -16,7 +16,7 @@ export const resolveAccount = async (data) => {
   return res.data;
 };
 
-export const createSubaccount = async () => {
-  const res = await appApi.post("/api/payouts/create-subaccount");
+export const createSubaccount = async (data) => {
+  const res = await appApi.post("/api/payouts/create-subaccount/", data);
   return res.data;
 };
