@@ -168,8 +168,8 @@ const BankDetailsForm = () => {
         <p className="text-sm text-gray-500">Verifying account...</p>
       )}
       {isAccountVerified && (
-        <p className="text-sm text-green-600">
-          Account Verified: {resolveMutation.data.accountName}
+        <p className="body-medium-semibold text-gray-500">
+        {resolveMutation.data.accountName}
         </p>
       )}
       {resolveMutation.isError && (

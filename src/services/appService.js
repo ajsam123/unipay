@@ -20,3 +20,8 @@ export const createSubaccount = async (data) => {
   const res = await appApi.post("/api/payouts/create-subaccount/", data);
   return res.data;
 };
+
+export const createPaymentLink = async (data) => {
+  const res = await appApi.post("/api/link/create/", data);
+  return res.data;
+};

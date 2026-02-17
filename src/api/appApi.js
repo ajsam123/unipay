@@ -9,6 +9,8 @@ const appApi = axios.create({
   },
 });
 
+
+// 🔐 Attach access token to every request
 appApi.interceptors.request.use(
   (config) => {
     const access = localStorage.getItem("access");
@@ -19,41 +21,88 @@ appApi.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
+
+// 🧠 Refresh control system
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+
+// 🔄 Response interceptor (handles expired tokens)
 appApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If access token expired
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+
+      const refreshToken = localStorage.getItem("refresh");
+
+      if (!refreshToken) {
+        localStorage.clear();
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      // If refresh already happening → wait
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return appApi(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
-        const refresh = localStorage.getItem("refresh");
-
         const res = await authApi.post("/api/token/refresh/", {
-          refresh: refresh,
+          refresh: refreshToken,
         });
 
         const newAccess = res.data.access;
 
         localStorage.setItem("access", newAccess);
 
+        processQueue(null, newAccess);
+
         originalRequest.headers.Authorization = `Bearer ${newAccess}`;
 
         return appApi(originalRequest);
-      } catch (refreshError) {
+      } catch (err) {
+        processQueue(err, null);
         localStorage.clear();
         window.location.href = "/login";
-        return Promise.reject(refreshError);
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 export default appApi;
+  

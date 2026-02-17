@@ -6,10 +6,13 @@ import { useModalStore } from "../store/modalStore";
 import { createPaymentLinkSchema } from "../schemas/createPayment.schema";
 import useLinkStore from "../store/useLinkStore";
 import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import { createPaymentLink } from "../services/appService";
+import { useState } from "react";
 
 const CreatePaymentLinkForm = () => {
-  const { addLink } = useLinkStore((s) => s);
   const { closeModal } = useModalStore((s) => s);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -19,24 +22,31 @@ const CreatePaymentLinkForm = () => {
     resolver: zodResolver(createPaymentLinkSchema),
   });
 
+  const createPaymentLinkMutation = useMutation({
+    mutationFn: createPaymentLink,
+    onSuccess: () => {
+      toast.success("Payment link created successfully");
+      setIsLoading(false);
+      closeModal();
+    },
+    onError: (error) => {
+      console.error("Failed to create link:", error);
+      toast.error("Failed to create payment link");
+      setIsLoading(false);
+    },
+  });
   const onSubmit = (data) => {
+    setIsLoading(true);
     console.log("FORM DATA:", {
       ...data,
       amount: Number(data.amount),
     });
-    addLink({
-      id: "link7",
-      dueName: data.title,
-      amount: data.amount,
-      link: "nfjndffe",
-      status: "Active",
-      collected: 0,
-      payers: 10,
+    createPaymentLinkMutation.mutate({
+      title: data.title,
+      amount_per_student: Number(data.amount),
+      description: data.description || null,
+      slug: data.title.toLowerCase().replace(/\s+/g, "-"),
     });
-
-    closeModal();
-    toast.success("Payment Link created succesfully");
-    // later: API call here
   };
 
   return (
@@ -62,8 +72,8 @@ const CreatePaymentLinkForm = () => {
         error={errors.description?.message}
       />
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Generating..." : "Generate Link"}
+      <Button type="submit" className="w-full" isLoading={isLoading}>
+        {isLoading ? "Generating..." : "Generate Link"}
       </Button>
     </form>
   );
