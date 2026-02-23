@@ -31,6 +31,7 @@ const Header = () => {
         <span className="body-medium-semibold">{currentTitle}</span>
       </div>
       <ActionModal
+      className=""
         trigger={<HeaderProfile />}
         actions={[
           {

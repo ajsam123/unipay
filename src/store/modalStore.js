@@ -21,4 +21,6 @@ export const useModalStore = create((set) => ({
       content: null,
       footer: null,
     }),
+
+    
 }));

@@ -18,8 +18,6 @@ import {
 
 import { useState } from "react";
 import { routes } from "../constants/routes.js";
-import Button from "../components/Button.jsx";
-import { MoreVertical } from "lucide-react";
 import ActionModal from "../components/ActionModal.jsx";
 import useLinkStore from "../store/useLinkStore.js";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
@@ -34,17 +32,25 @@ const LinkTable = () => {
 
   const columns = [
     { accessorKey: "id", header: "Link ID" },
-    { accessorKey: "dueName", header: "Due name" },
+    { accessorKey: "dueName", header: "Due Name" },
     {
       accessorKey: "amount",
       header: "Amount",
-      cell: (info) => `₦${info.getValue().toLocaleString()}`,
+      cell: (info) => (
+        <span className="font-semibold text-gray-900">
+          ₦{info.getValue().toLocaleString()}
+        </span>
+      ),
     },
     { accessorKey: "link", header: "Link" },
     {
       accessorKey: "collected",
-      header: "Total collected",
-      cell: (info) => `₦${info.getValue().toLocaleString()}`,
+      header: "Total Collected",
+      cell: (info) => (
+        <span className="font-medium text-gray-800">
+          ₦{info.getValue().toLocaleString()}
+        </span>
+      ),
     },
     { accessorKey: "payers", header: "Payers" },
     {
@@ -99,17 +105,18 @@ const LinkTable = () => {
   const showPagination = links.length > 10;
 
   return (
-    <>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>
+        {/* Header */}
         {links.length > 0 && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-gray-50">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="cursor-pointer"
                     onClick={header.column.getToggleSortingHandler()}
+                    className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 hover:bg-gray-100 transition"
                   >
                     {header.column.columnDef.header}
                     {{
@@ -123,13 +130,17 @@ const LinkTable = () => {
           </TableHeader>
         )}
 
+        {/* Body */}
         <TableBody>
           {links.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-10">
-                <div className="flex flex-col items-center gap-2 text-gray-500">
+              <TableCell
+                colSpan={columns.length}
+                className="text-center bg-gray-50 py-20"
+              >
+                <div className="flex flex-col items-center gap-3 text-gray-500">
                   <svg
-                    className="w-12 h-12 opacity-40"
+                    className="w-16 h-16 opacity-30"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -137,11 +148,11 @@ const LinkTable = () => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
+                      strokeWidth={1.5}
                       d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4"
                     />
                   </svg>
-                  <p className="text-lg font-medium">No links yet</p>
+                  <p className="text-lg font-semibold">No links yet</p>
                   <p className="text-sm text-gray-400">
                     Create a payment link to see it appear here.
                   </p>
@@ -152,16 +163,24 @@ const LinkTable = () => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
+                className="hover:bg-gray-50 transition duration-200 cursor-pointer"
                 onClick={() =>
                   navigate({
                     to: routes.TRANSACTION,
                     params: { linkId: row.original.id },
                   })
                 }
-                style={{ cursor: "pointer" }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className="px-6 py-4 text-sm text-gray-700"
+                    onClick={(e) => {
+                      if (cell.column.id === "actions") {
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -171,33 +190,34 @@ const LinkTable = () => {
         </TableBody>
       </Table>
 
+      {/* Pagination */}
       {showPagination && (
-        <div className="flex items-center justify-between px-2 py-4">
-          <div className="text-sm text-muted-foreground">
+        <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t">
+          <div className="text-sm text-gray-500">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              className="border rounded px-3 py-1 text-sm disabled:opacity-50"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
+              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition"
             >
               Previous
             </button>
 
             <button
-              className="border rounded px-3 py-1 text-sm disabled:opacity-50"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
+              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition"
             >
               Next
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

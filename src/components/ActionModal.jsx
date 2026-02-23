@@ -14,9 +14,9 @@ import Button from "./Button";
 //  * - trigger: optional custom button (default is ⋮)
 //  * - actions: array of { label: string, onClick: function, color?: string }
 //  */
-const ActionModal = ({ trigger, actions = [] }) => {
+const ActionModal = ({ trigger, actions = [], className }) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu className={`${className}`}>
       <DropdownMenuTrigger asChild>
         {trigger || (
           <Button
