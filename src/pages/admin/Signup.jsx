@@ -8,35 +8,21 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schema.js";
-import { signup } from "../../services/authService.js";
-import toast from "react-hot-toast";
+import { useAuth } from "../../hooks/useAuth.js";
 
 const Signup = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { signUpMutation } = useAuth();
 
-  const submitHandler = async (data) => {
-    try {
-      setIsLoading(true);
-
-      await signup(data);
-
-      router.navigate({
-        to: routes.VERIFYEMAIL,
-        search: {
-          email: data.email,
-        },
-      });
-    } catch (error) {
-      const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Something went wrong";
-
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
-    }
+  const submitHandler = (data) => {
+    signUpMutation.mutate(data, {
+      onSuccess: () => {
+        router.navigate({
+          to: routes.VERIFYEMAIL,
+          search: { email: data.email },
+        });
+      },
+    });
   };
 
   const errorHandler = (errors) => {
@@ -52,6 +38,7 @@ const Signup = () => {
     defaultValues: {
       first_name: "",
       last_name: "",
+      phone_number: "",
       email: "",
       password: "",
       confirm_password: "",
@@ -99,6 +86,15 @@ const Signup = () => {
         />
 
         <Input
+          {...register("phone_number")}
+          leftIcon={<img src={mail} alt="mail icon" />}
+          label="Phone number"
+          className="w-full border-neutral-black-9"
+          placeholder="Your phone number"
+          error={errors.phone_number?.message}
+        />
+
+        <Input
           {...register("password")}
           leftIcon={<img src={lock} alt="lock icon" />}
           type="password"
@@ -117,16 +113,13 @@ const Signup = () => {
           error={errors.confirm_password?.message}
         />
 
-        <Button isLoading={isLoading}>Sign up</Button>
+        <Button isLoading={signUpMutation.isPending}>Sign up</Button>
       </form>
 
       <div className="text-center flex flex-col gap-4">
         <span>
           Already have an account?{" "}
-          <Link
-            className="text-neutral-black-9"
-            to={routes.LOGIN}
-          >
+          <Link className="text-neutral-black-9" to={routes.LOGIN}>
             Log in
           </Link>
         </span>

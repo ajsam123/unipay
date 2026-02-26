@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../components/ui/table";
+} from "../components/ui/table.jsx";
 
 import {
   useReactTable,
@@ -24,17 +24,18 @@ import { useModalStore } from "../store/modalStore.js";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getPaymentLinks } from "../services/appService.js";
+import { userLinks } from "../data/links.js";
 
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
   const { openModal } = useModalStore((s) => s);
 
-  const { data: links = [] } = useQuery({
-    queryKey: ["links"],
-    queryFn: getPaymentLinks,
-    staleTime: Infinity,
-  });
+  // const { data: links = [] } = useQuery({
+  //   queryKey: ["links"],
+  //   queryFn: getPaymentLinks,
+  //   staleTime: Infinity,
+  // });
 
   const columns = [
     { accessorKey: "id", header: "Link ID" },
@@ -98,7 +99,7 @@ const LinkTable = () => {
   ];
 
   const table = useReactTable({
-    data: links,
+    data: userLinks,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -108,13 +109,13 @@ const LinkTable = () => {
     initialState: { pagination: { pageSize: 10 } },
   });
 
-  const showPagination = links.length > 10;
+  const showPagination = userLinks.length > 10;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>
         {/* Header */}
-        {links.length > 0 && (
+        {userLinks.length > 0 && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-gray-50">
@@ -138,7 +139,7 @@ const LinkTable = () => {
 
         {/* Body */}
         <TableBody>
-          {links.length === 0 ? (
+          {userLinks.length === 0 ? (
             <TableRow>
               <TableCell
                 colSpan={columns.length}

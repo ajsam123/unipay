@@ -10,7 +10,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <>
     <QueryClientProvider client={queryClient}>
-      <Toaster position="top" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
       <ReactQueryDevtools initialIsOpen={false} />
       <RouterProvider router={router} />
     </QueryClientProvider>

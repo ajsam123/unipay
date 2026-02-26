@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../components/ui/table";
+} from "../components/ui/table.jsx";
 
 import {
   useReactTable,
@@ -15,9 +15,9 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 
-import { transactions } from "../data/paymentTable";
-import { exportTransactionsPDF } from "../utils/exportTransactionPdf";
-import Button from "../components/Button";
+import { transactions } from "../data/paymentTable.js";
+import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
+import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
 
 const TransactionTable = ({ linkId }) => {
@@ -25,7 +25,7 @@ const TransactionTable = ({ linkId }) => {
 
   const filteredTransactions = useMemo(
     () => transactions.filter((x) => x.linkId === linkId),
-    [linkId]
+    [linkId],
   );
 
   const handleTransactions = () => {
@@ -109,9 +109,7 @@ const TransactionTable = ({ linkId }) => {
                       d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4"
                     />
                   </svg>
-                  <p className="text-lg font-semibold">
-                    No transactions yet
-                  </p>
+                  <p className="text-lg font-semibold">No transactions yet</p>
                   <p className="text-sm text-gray-400">
                     Once payments are made, they will appear here.
                   </p>
@@ -141,8 +139,8 @@ const TransactionTable = ({ linkId }) => {
                           cell.getValue() === "success"
                             ? "bg-green-100 text-green-700"
                             : cell.getValue() === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
                         }`}
                       >
                         {cell.getValue()}
