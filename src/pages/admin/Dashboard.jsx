@@ -6,7 +6,7 @@ import RecentTransactions from "../../components/RecentTransactions";
 const Dashboard = () => {
   return (
     <div className="">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Links"
           description="All created payment links"

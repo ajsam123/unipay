@@ -134,13 +134,13 @@ const resetPasswordRoute = createRoute({
 const appLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "app",
-  beforeLoad: () => {
-    const token = localStorage.getItem("access");
+  // beforeLoad: () => {
+  //   const token = localStorage.getItem("access");
 
-    if (!token) {
-      throw redirect({ to: routes.LOGIN });
-    }
-  },
+  //   if (!token) {
+  //     throw redirect({ to: routes.LOGIN });
+  //   }
+  // },
   component: AppLayout,
 });
 

@@ -19,16 +19,22 @@ import {
 import { useState } from "react";
 import { routes } from "../constants/routes.js";
 import ActionModal from "../components/ActionModal.jsx";
-import useLinkStore from "../store/useLinkStore.js";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
 import { useModalStore } from "../store/modalStore.js";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { getPaymentLinks } from "../services/appService.js";
 
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
-  const { links } = useLinkStore((s) => s);
   const { openModal } = useModalStore((s) => s);
+
+  const { data: links = [] } = useQuery({
+    queryKey: ["links"],
+    queryFn: getPaymentLinks,
+    staleTime: Infinity,
+  });
 
   const columns = [
     { accessorKey: "id", header: "Link ID" },

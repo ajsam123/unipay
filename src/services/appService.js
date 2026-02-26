@@ -25,3 +25,8 @@ export const createPaymentLink = async (data) => {
   const res = await appApi.post("/api/link/create/", data);
   return res.data;
 };
+
+export const getPaymentLinks = async () => {
+  const res = await appApi.get("/links/");
+  return res.data;
+};

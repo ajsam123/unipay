@@ -9,7 +9,7 @@ const AppLayout = () => {
     <div className="flex h-screen relative">
       <div
         className={`
-          fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden
+          fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden 
           ${navbar ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}
         `}
         onClick={() => setNavbar(false)}
@@ -33,7 +33,7 @@ const AppLayout = () => {
         <div className=" sticky top-0 z-50 bg-white">
           <Header />
         </div>
-        <div className="flex-1 bg-neutral-black-4 dark:bg-neutral-black-12  relative py-5 px-6 h-screen overflow-y-auto scrollBar">
+        <div className="flex-1 bg-gray-50 dark:bg-neutral-black-12  relative py-5 px-6 h-screen overflow-y-auto scrollBar">
           <Outlet />
         </div>
       </main>

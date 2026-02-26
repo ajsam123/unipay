@@ -3,7 +3,7 @@ import { resendOtp, verifyLoginOtp } from "../../services/authService";
 import OtpForm from "../../components/OtpForm";
 import toast from "react-hot-toast";
 import { routes } from "../../constants/routes";
-import {  useState } from "react";
+import { useState } from "react";
 
 const LoginOtp = () => {
   const router = useRouter();
@@ -12,14 +12,13 @@ const LoginOtp = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-
   const handleLogin = async (otp, setError) => {
     try {
       setIsLoading(true);
 
       await verifyLoginOtp({ email, otp });
 
-      toast.success("Email verified successfully");
+      toast.success("Login Succesful");
 
       router.navigate({ to: routes.DASHBOARD });
     } catch (error) {
