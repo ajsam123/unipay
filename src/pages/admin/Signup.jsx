@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Input from "../../components/Input";
 import mail from "./../../assets/mail-01.svg";
 import lock from "./../../assets/lock-03.svg";

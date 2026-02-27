@@ -1,58 +1,33 @@
 import { useRouter, useRouterState } from "@tanstack/react-router";
-import { verifyEmail, resendOtp } from "../../services/authService";
 import OtpForm from "../../components/OtpForm";
 import toast from "react-hot-toast";
 import { routes } from "../../constants/routes";
-import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 const VerifyEmailPage = () => {
   const router = useRouter();
+  const { verifyEmailMutation, resendOtpMutation } = useAuth();
+  const isLoading =
+    verifyEmailMutation.isPending || resendOtpMutation.isPending;
   const { email } = useRouterState({
     select: (state) => state.location.search,
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-
-  const handleVerify = async (otp, setError) => {
-    try {
-      setIsLoading(true);
-
-      await verifyEmail({ email, otp });
-
-      toast.success("Email verified successfully");
-
-      router.navigate({
-        to: routes.ONBOARDINGONE,
-      });
-    } catch (error) {
-      const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Invalid or expired OTP";
-
-      setError(message);
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleVerify = (otp) => {
+    verifyEmailMutation.mutate(otp, {
+      onSuccess: () => {
+        toast.success("Email verified successfully");
+        router.navigate({ to: routes.LOGIN });
+      },
+    });
   };
 
-  const handleResend = async () => {
-    try {
-      setIsLoading(true);
-
-      await resendOtp({ email });
-
-      toast.success("OTP resent");
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error ||
-          error?.response?.data?.message ||
-          "Something went wrong",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handleResend = () => {
+    resendOtpMutation.mutate(email, {
+      onSuccess: () => {
+        toast.success("OTP resent to your email");
+      },
+    });
   };
 
   return (

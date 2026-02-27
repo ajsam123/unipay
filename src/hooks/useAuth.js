@@ -1,14 +1,15 @@
 // hooks/useAuth.js
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-// import { loginUser, getCurrentUser } from "../services/appService";
 import {
   login,
   signup,
   verifyEmail,
   verifyLoginOtp,
+  resendOtp,
 } from "../services/authService";
-import toast from "react-hot-toast";
 import { handleApiError } from "../utils/getErrorMessage";
+
+
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -25,12 +26,7 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: login,
     onError: (error) => {
-      const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Something went wrong";
-
-      toast.error(message);
+      handleApiError(error);
     },
   });
 
@@ -39,12 +35,22 @@ export function useAuth() {
     onSuccess: (data) => {
       localStorage.setItem("access", data.access_token);
       localStorage.setItem("refresh", data.refresh_token);
-      queryClient.invalidateQueries(["me"]);
+      // queryClient.invalidateQueries(["me"]);
+    },
+  });
+
+  const resendOtpMutation = useMutation({
+    mutationFn: resendOtp,
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 
   const verifyEmailMutation = useMutation({
     mutationFn: verifyEmail,
+    onError: (error) => {
+      handleApiError(error);
+    },
   });
 
   // Fetch current user
@@ -59,5 +65,6 @@ export function useAuth() {
     verifyLoginOtpMutation,
     signUpMutation,
     verifyEmailMutation,
+    resendOtpMutation,
   };
 }

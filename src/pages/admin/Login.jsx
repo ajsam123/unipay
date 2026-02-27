@@ -1,20 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter, Link } from "@tanstack/react-router";
-
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import mail from "./../../assets/mail-01.svg";
 import lock from "./../../assets/lock-03.svg";
 import { routes } from "../../constants/routes.js";
 import { loginschema } from "../../schemas/auth.schema.js";
-import { login } from "../../services/authService.js";
 import toast from "react-hot-toast";
+import { useAuth } from "../../hooks/useAuth.js";
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter(); // use TanStack Router
+  const { loginMutation } = useAuth();
 
   const {
     handleSubmit,
@@ -28,29 +26,16 @@ const Login = () => {
     },
   });
 
-  const submitHandler = async (val) => {
-    try {
-      setIsLoading(true);
-
-      await login(val);
-
-      toast.success("OTP sent to your email");
-
-      // Navigate to Login OTP page using search params
-      router.navigate({
-        to: routes.LOGINOTP,
-        search: { email: val.email },
-      });
-    } catch (error) {
-      const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Invalid email or password";
-
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
-    }
+  const submitHandler = (val) => {
+    loginMutation.mutate(val, {
+      onSuccess: () => {
+        toast.success("OTP sent to your email");
+        router.navigate({
+          to: routes.LOGINOTP,
+          search: { email: val.email },
+        });
+      },
+    });
   };
 
   const errorHandler = (errors) => {
@@ -89,7 +74,7 @@ const Login = () => {
           error={errors.password?.message}
         />
 
-        <Button isLoading={isLoading} type="submit">
+        <Button isLoading={loginMutation.isPending} type="submit">
           Login
         </Button>
       </form>
