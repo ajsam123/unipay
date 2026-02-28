@@ -22,20 +22,17 @@ import ActionModal from "../components/ActionModal.jsx";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
 import { useModalStore } from "../store/modalStore.js";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { getPaymentLinks } from "../services/appService.js";
+
 import { userLinks } from "../data/links.js";
+import { useGetLinks } from "../hooks/useLinks.js";
 
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
+  const { data: links, isLoading } = useGetLinks();
+
   const { openModal } = useModalStore((s) => s);
 
-  // const { data: links = [] } = useQuery({
-  //   queryKey: ["links"],
-  //   queryFn: getPaymentLinks,
-  //   staleTime: Infinity,
-  // });
 
   const columns = [
     { accessorKey: "id", header: "Link ID" },
@@ -136,8 +133,7 @@ const LinkTable = () => {
             ))}
           </TableHeader>
         )}
-
-        {/* Body */}
+        n{/* Body */}
         <TableBody>
           {userLinks.length === 0 ? (
             <TableRow>

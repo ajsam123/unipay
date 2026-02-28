@@ -14,7 +14,7 @@ const OtpForm = ({ email, onSubmit, onResend, title, subtitle, isLoading }) => {
 
   // Expiry countdown
   useEffect(() => {
-    if (expiryTime <= 0) return;
+    // if (expiryTime <= 0) return;
 
     const timer = setInterval(() => {
       setExpiryTime((prev) => prev - 1);
@@ -48,10 +48,10 @@ const OtpForm = ({ email, onSubmit, onResend, title, subtitle, isLoading }) => {
       return;
     }
 
-    if (expiryTime <= 0) {
-      setError("OTP has expired. Please request a new one.");
-      return;
-    }
+    // if (expiryTime <= 0) {
+    //   setError("OTP has expired. Please request a new one.");
+    //   return;
+    // }
 
     setError(null);
 

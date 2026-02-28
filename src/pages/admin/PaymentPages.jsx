@@ -15,7 +15,7 @@ const PaymentPages = () => {
           </span>
         </div>
         <Button
-        className="w-full max-w-45"
+          className="w-full max-w-45"
           onClick={() =>
             openModal({
               title: "Create Payment Link",

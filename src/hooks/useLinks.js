@@ -1,20 +1,27 @@
 // hooks/useLinks.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPaymentLinks, createLink } from "../services/appService";
+import { getPaymentLinks, createPaymentLink } from "../services/appService";
+import { handleApiError } from "../utils/getErrorMessage";
 
-export function useLinks() {
-  const queryClient = useQueryClient();
-
-  const { data: links, isLoading } = useQuery({
+// ----------------- QUERY -----------------
+export function useGetLinks() {
+  return useQuery({
     queryKey: ["links"],
     queryFn: getPaymentLinks,
+    onError: handleApiError,
+    refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
   });
+}
 
-  const createLinkMutation = useMutation(createLink, {
+// ----------------- MUTATION -----------------
+export function useCreateLink() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createPaymentLink,
     onSuccess: () => {
-      queryClient.invalidateQueries(["links"]);
+      queryClient.invalidateQueries({ queryKey: ["links"] });
     },
+    onError: handleApiError,
   });
-
-  return { links, isLoading, createLinkMutation };
 }

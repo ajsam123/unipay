@@ -1,12 +1,21 @@
-import { Lock, LogOut, Mail, User, UserX } from "lucide-react";
+import {
+  Lock,
+  LogOut,
+  LucideUniversity,
+  Mail,
+  User,
+  UserX,
+} from "lucide-react";
 import Input from "../../components/Input";
 import ProfileUserInfo from "../../components/ProfileUserInfo";
 import Button from "../../components/Button";
 import { useModalStore } from "../../store/modalStore";
 import BankDetailsForm from "../../components/BankDetailsForm";
+import { useUsers } from "../../hooks/useUsers.js";
 
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
+  const { data: user, isLoading } = useUsers(); // data is a single user object
   return (
     <div className="rounded-lg flex gap-6 w-full flex-col ">
       <div className="lg:grid grid-cols-3 gap-10 w-full border-b border-neutral-black-5  pb-6 ">
@@ -20,7 +29,9 @@ const Profile = () => {
           <ProfileUserInfo title="Avatar" />
           <div className="lg:flex gap-2 w-full">
             <Input
-              placeholder="Fajar Gunawan"
+              placeholder={
+                user?.first_name + " " + user?.last_name || "Full Name"
+              }
               className="w-full"
               label="Full Name"
               disabled
@@ -29,9 +40,17 @@ const Profile = () => {
             <Input
               className="w-full"
               label="Email"
-              placeholder="fajar123@gmail.com"
+              placeholder={user?.email}
               disabled
               leftIcon={<Mail size={20} />}
+            />
+
+            <Input
+              className="w-full"
+              label="University"
+              placeholder={user?.university_name}
+              disabled
+              leftIcon={<LucideUniversity size={20} />}
             />
           </div>
           <Input

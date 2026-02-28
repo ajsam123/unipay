@@ -1,16 +1,23 @@
 import { ChevronDown } from "lucide-react";
 import ActionModal from "./ActionModal";
+import { useUsers } from "../hooks/useUsers";
 
 const HeaderProfile = () => {
-
   const userActions = [
     { label: "Settings", onClick: () => console.log("Settings opened") },
     { label: "Support", onClick: () => console.log("Support clicked") },
-    { label: "Log Out", onClick: () => console.log("User logged out"), color: "red" },
+    {
+      label: "Log Out",
+      onClick: () => console.log("User logged out"),
+      color: "red",
+    },
   ];
-  
+
+  const { data: user, isLoading } = useUsers(); // data is a single user object
+
   return (
     <ActionModal
+      className="w-full"
       trigger={
         <div className="py-1 pl-1 pr-3 bg-neutral-black-3/10 bg-neutral-black-9 md:gap-3 gap-1 rounded-full flex items-center hover:cursor-pointer">
           <figure>
@@ -22,11 +29,11 @@ const HeaderProfile = () => {
           </figure>
           <div className="lg:flex flex-col md:flex hidden">
             <div className="flex gap-1">
-              <span className="body-small-medium">Samuel</span>
-              <span className="body-small-medium">Ajose</span>
+              <span className="body-small-medium">{user?.first_name}</span>
+              <span className="body-small-medium">{user?.last_name}</span>
             </div>
             <span className="body-xsmall-medium text-paragraph">
-              ajosesamuel2007@gmail.com
+              {user?.email}
             </span>
           </div>
           <figure>
@@ -39,7 +46,7 @@ const HeaderProfile = () => {
           </figure>
         </div>
       }
-      actions = {userActions}
+      actions={userActions}
     />
   );
 };
