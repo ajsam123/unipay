@@ -14,20 +14,26 @@ const VerifyEmailPage = () => {
   });
 
   const handleVerify = (otp) => {
-    verifyEmailMutation.mutate(otp, {
-      onSuccess: () => {
-        toast.success("Email verified successfully");
-        router.navigate({ to: routes.LOGIN });
+    verifyEmailMutation.mutate(
+      { email, otp },
+      {
+        onSuccess: () => {
+          toast.success("Email verified successfully");
+          router.navigate({ to: routes.LOGIN });
+        },
       },
-    });
+    );
   };
 
   const handleResend = () => {
-    resendOtpMutation.mutate(email, {
-      onSuccess: () => {
-        toast.success("OTP resent to your email");
+    resendOtpMutation.mutate(
+      { email },
+      {
+        onSuccess: () => {
+          toast.success("OTP resent to your email");
+        },
       },
-    });
+    );
   };
 
   return (

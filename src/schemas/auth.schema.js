@@ -9,8 +9,20 @@ export const registerSchema = z
       .string()
       .min(10, "Phone number must be at least 10 digits")
       .regex(/^\+?[0-9]+$/, "Invalid phone number"),
-    password: z.string().min(6, "Minimum 6 characters"),
-    confirm_password: z.string().min(6, "Minimum 6 characters"),
+    password: z
+      .string()
+      .min(8, "Minimum of 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/,
+        "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      ),
+    confirm_password: z
+      .string()
+      .min(8, "Minimum of 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/,
+        "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      ),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match",
@@ -22,8 +34,8 @@ export const loginschema = z.object({
     .string()
     .min(8, "Minimum of 8 characters")
     .regex(
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-      "Password must contain atleast 1 uppercase, 1 lowercase,1 number and 1 special character "
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/,
+      "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
     ),
 });
 
@@ -38,7 +50,7 @@ export const resetPasswordSchema = z
       .min(8, "Password must be at least 8 characters long")
       .regex(
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-        "Password must contain atleast 1 uppercase, 1 lowercase,1 number and 1 special character "
+        "Password must contain atleast 1 uppercase, 1 lowercase,1 number and 1 special character ",
       ),
     confirm_new_password: z.string().min(8, "Please confirm your password"),
   })

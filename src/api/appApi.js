@@ -9,7 +9,6 @@ const appApi = axios.create({
   },
 });
 
-
 // 🔐 Attach access token to every request
 appApi.interceptors.request.use(
   (config) => {
@@ -21,9 +20,8 @@ appApi.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
-
 
 // 🧠 Refresh control system
 let isRefreshing = false;
@@ -41,18 +39,13 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-
 // 🔄 Response interceptor (handles expired tokens)
 appApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
-
+    if (error.response?.status === 401 && !originalRequest._retry) {
       const refreshToken = localStorage.getItem("refresh");
 
       if (!refreshToken) {
@@ -77,11 +70,11 @@ appApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await authApi.post("/api/token/refresh/", {
-          refresh: refreshToken,
+        const res = await authApi.post("/api/auth/refresh-token", {
+          refreshToken: refreshToken,
         });
 
-        const newAccess = res.data.access;
+        const newAccess = res.data.accessToken;
 
         localStorage.setItem("access", newAccess);
 
@@ -101,8 +94,7 @@ appApi.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default appApi;
-  

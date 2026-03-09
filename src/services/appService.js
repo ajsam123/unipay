@@ -48,3 +48,9 @@ export const updateUser = async (data) => {
   const res = await appApi.patch("api/users/user/update/", data);
   return res.data;
 };
+
+// ---------------- GET PENDING VERIFICATIONS ----------------
+export const getTransactions = async () => {
+  const res = await appApi.get("/transactions/");
+  return res.data;
+};

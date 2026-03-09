@@ -22,20 +22,26 @@ import ActionModal from "../components/ActionModal.jsx";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
 import { useModalStore } from "../store/modalStore.js";
 import toast from "react-hot-toast";
-
-import { userLinks } from "../data/links.js";
 import { useGetLinks } from "../hooks/useLinks.js";
 
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
   const { data: links, isLoading } = useGetLinks();
-
   const { openModal } = useModalStore((s) => s);
 
+  // Transform backend data to match table structure
+  const formattedLinks =
+    links?.map((link) => ({
+      id: link.id,
+      dueName: link.title,
+      amount: Number(link.amount_per_student),
+      link: link.hosted_url,
+      collected: Number(link.total_amount_collected),
+      payers: link.total_student_paid,
+    })) || [];
 
   const columns = [
-    { accessorKey: "id", header: "Link ID" },
     { accessorKey: "dueName", header: "Due Name" },
     {
       accessorKey: "amount",
@@ -62,6 +68,7 @@ const LinkTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const link = row.original;
+
         return (
           <ActionModal
             actions={[
@@ -96,7 +103,7 @@ const LinkTable = () => {
   ];
 
   const table = useReactTable({
-    data: userLinks,
+    data: formattedLinks,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -106,13 +113,13 @@ const LinkTable = () => {
     initialState: { pagination: { pageSize: 10 } },
   });
 
-  const showPagination = userLinks.length > 10;
+  const showPagination = formattedLinks.length > 10;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>
         {/* Header */}
-        {userLinks.length > 0 && (
+        {formattedLinks.length > 0 && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-gray-50">
@@ -122,7 +129,11 @@ const LinkTable = () => {
                     onClick={header.column.getToggleSortingHandler()}
                     className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 hover:bg-gray-100 transition"
                   >
-                    {header.column.columnDef.header}
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+
                     {{
                       asc: " 🔼",
                       desc: " 🔽",
@@ -133,9 +144,10 @@ const LinkTable = () => {
             ))}
           </TableHeader>
         )}
-        n{/* Body */}
+
+        {/* Body */}
         <TableBody>
-          {userLinks.length === 0 ? (
+          {formattedLinks.length === 0 ? (
             <TableRow>
               <TableCell
                 colSpan={columns.length}
@@ -155,7 +167,9 @@ const LinkTable = () => {
                       d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4"
                     />
                   </svg>
+
                   <p className="text-lg font-semibold">No links yet</p>
+
                   <p className="text-sm text-gray-400">
                     Create a payment link to see it appear here.
                   </p>
