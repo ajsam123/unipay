@@ -31,6 +31,12 @@ export const getPaymentLinks = async () => {
   return res.data;
 };
 
+export const deletepaymentLink = async (id) => {
+  console.log(id)
+  const res = await appApi.delete(`/links/${id}/delete/`);
+  return res.data;
+};
+
 // ---------------- GET ALL USERS ----------------
 export const getUsers = async () => {
   const res = await appApi.get("api/users/");
@@ -40,6 +46,15 @@ export const getUsers = async () => {
 // ---------------- GET PENDING VERIFICATIONS ----------------
 export const getPendingVerifications = async () => {
   const res = await appApi.get("api/admin/pending-verifications/");
+  return res.data;
+};
+
+// ---------------- VERIFY USER (APPROVE / DISAPPROVE) ----------------
+export const verifyUser = async ({ userId: id, approved }) => {
+  const res = await appApi.patch(`api/admin/verify-user/${id}/`, {
+    is_id_approved: approved,
+  });
+
   return res.data;
 };
 

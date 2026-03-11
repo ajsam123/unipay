@@ -71,10 +71,7 @@ const Profile = () => {
           variant="outline"
           className="w-full max-w-40"
           onClick={() =>
-            openModal({
-              title: "Bank details",
-              content: <BankDetailsForm />,
-            })
+            openModal(BankDetailsForm)
           }
         >
           Add Bank details

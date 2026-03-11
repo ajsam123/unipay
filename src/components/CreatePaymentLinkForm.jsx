@@ -20,14 +20,10 @@ const CreatePaymentLinkForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log("FORM DATA:", {
-      ...data,
-      amount: Number(data.amount),
-    });
     createLinkMutation.mutate(
       {
         ...data,
-        amount: Number(data.amount),
+        amount_per_student: Number(data.amount),
       },
 
       {

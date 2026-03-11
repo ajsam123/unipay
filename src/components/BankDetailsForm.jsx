@@ -137,6 +137,7 @@ const BankDetailsForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-5 w-full"
     >
+      <h1 className='body-medium-semibold'>Bank details</h1>
       {/* Bank Combobox */}
       <Controller
         name="bankCode"

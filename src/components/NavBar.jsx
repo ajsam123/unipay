@@ -6,6 +6,7 @@ import {
   HandCoins,
   CreditCard,
   CircleUserRound,
+  ShieldCheck,
 } from "lucide-react";
 import { useNavbar } from "../store/useNavbar";
 
@@ -31,6 +32,11 @@ const NavBar = () => {
       icon: <CircleUserRound size={20} />,
       label: "Profile",
       path: routes.PROFILE,
+    },
+    {
+      icon: <ShieldCheck size={20} />,
+      label: "Verification Centre",
+      path: routes.VERIFICATIONCENTRE,
     },
   ];
   const { navbar, setNavbar } = useNavbar((s) => s);

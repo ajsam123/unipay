@@ -1,21 +1,24 @@
+// components/DeleteLinkModal.jsx - BRAND NEW
 import { AlertTriangle } from "lucide-react";
-import useLinkStore from "../store/useLinkStore";
 import Button from "./Button";
-import { useModalStore } from "../store/modalStore";
 import toast from "react-hot-toast";
+import { useDeleteLink } from "../hooks/useLinks";
 
-const DeleteLinkModal = ({ linkId }) => {
-  const { deleteLink } = useLinkStore((s) => s);
-  const { closeModal } = useModalStore((s) => s);
-  const handleClose = () => {
-    deleteLink(linkId);
-    closeModal();
-    toast.success("Link deleted successfully");
+// NO STORE IMPORTS HERE!
+const DeleteLinkModal = ({ linkId, onClose }) => {
+  const { mutate: deleteLink, isLoading } = useDeleteLink();
+
+  const handleDelete = () => {
+    deleteLink("efe7bd9d-30f2-41ee-bcce-a012a618f783", {
+      onSuccess: () => {
+        toast.success("Link deleted successfully");
+        onClose(); // Just call onClose
+      }
+    });
   };
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">
-      {/* Icon and warning */}
       <AlertTriangle size={48} className="text-red-500" />
       <div className="text-center space-y-1">
         <p className="text-lg font-semibold">Delete Link</p>
@@ -25,12 +28,16 @@ const DeleteLinkModal = ({ linkId }) => {
         </p>
       </div>
 
-      {/* Footer buttons */}
       <div className="flex flex-col gap-2 w-full mt-2">
-        <Button variant="stroke" onClick={() => closeModal()}>
+        <Button variant="stroke" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="red" onClick={handleClose}>
+        <Button
+          variant="red"
+          onClick={handleDelete}
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
           Delete
         </Button>
       </div>

@@ -1,6 +1,10 @@
 // hooks/useLinks.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPaymentLinks, createPaymentLink } from "../services/appService";
+import {
+  getPaymentLinks,
+  createPaymentLink,
+  deletepaymentLink,
+} from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
 
 // ----------------- QUERY -----------------
@@ -19,6 +23,18 @@ export function useCreateLink() {
 
   return useMutation({
     mutationFn: createPaymentLink,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+    },
+    onError: handleApiError,
+  });
+}
+
+// ----------------- DELETE LINK -----------------
+export function useDeleteLink() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletepaymentLink,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] });
     },

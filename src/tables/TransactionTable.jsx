@@ -15,7 +15,6 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 
-import { transactions } from "../data/paymentTable.js";
 import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
@@ -26,13 +25,8 @@ const TransactionTable = ({ linkId }) => {
 
   const { data: transactions, isLoading } = useGetTransactions();
 
-  const filteredTransactions = useMemo(
-    () => transactions.filter((x) => x.linkId === linkId),
-    [linkId],
-  );
-
   const handleTransactions = () => {
-    exportTransactionsPDF(filteredTransactions, linkId);
+    exportTransactionsPDF(transactions, linkId);
     toast.success("Exporting PDF...");
   };
 
@@ -51,7 +45,7 @@ const TransactionTable = ({ linkId }) => {
   ];
 
   const table = useReactTable({
-    data: filteredTransactions,
+    data: transactions || [],
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -61,8 +55,8 @@ const TransactionTable = ({ linkId }) => {
     initialState: { pagination: { pageSize: 10 } },
   });
 
-  const showPagination = filteredTransactions.length > 10;
-  const hasTransactions = filteredTransactions.length > 0;
+  const showPagination = transactions?.length > 10;
+  const hasTransactions = transactions?.length > 0;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

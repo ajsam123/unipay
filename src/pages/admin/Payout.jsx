@@ -1,11 +1,7 @@
 import { Wallet } from "lucide-react";
 import StatCard from "../../components/StatCard";
-import { usePendingVerifications } from "../../hooks/useUsers";
 
 const Payout = () => {
-
-  const { data: users, isLoading } = usePendingVerifications()
-  console.log(users)
   return (
     <section className="flex flex-col gap-4 w-full">
       <h1 className="heading-3">Payouts</h1>

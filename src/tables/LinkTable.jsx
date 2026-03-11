@@ -1,3 +1,4 @@
+// LinkTable.jsx
 import { useNavigate } from "@tanstack/react-router";
 import {
   Table,
@@ -7,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table.jsx";
-
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,8 +15,7 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-
-import { useState } from "react";
+import { useState, memo } from "react";
 import { routes } from "../constants/routes.js";
 import ActionModal from "../components/ActionModal.jsx";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
@@ -24,13 +23,43 @@ import { useModalStore } from "../store/modalStore.js";
 import toast from "react-hot-toast";
 import { useGetLinks } from "../hooks/useLinks.js";
 
+// ---------------- Row Actions ----------------
+const RowActions = memo(({ link, navigate, openModal }) => {
+  return (
+    <ActionModal
+      actions={[
+        {
+          label: "View Transactions",
+          onClick: () =>
+            navigate({ to: routes.TRANSACTION, params: { linkId: link.id } }),
+        },
+        {
+          label: "Copy Link",
+          onClick: () => {
+            navigator.clipboard.writeText(link.link);
+            toast.success("Link copied to clipboard");
+          },
+        },
+        {
+          label: "Delete",
+          color: "red",
+         onClick: () => {
+            // Pass the component DIRECTLY, not as type
+            openModal(DeleteLinkModal, { linkId: link.id });
+          },
+        },
+      ]}
+    />
+  );
+});
+
+// ---------------- Link Table ----------------
 const LinkTable = () => {
   const [sorting, setSorting] = useState([]);
   const navigate = useNavigate();
   const { data: links, isLoading } = useGetLinks();
-  const { openModal } = useModalStore((s) => s);
+  const  openModal  = useModalStore((s) => s.openModal);
 
-  // Transform backend data to match table structure
   const formattedLinks =
     links?.map((link) => ({
       id: link.id,
@@ -66,39 +95,7 @@ const LinkTable = () => {
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => {
-        const link = row.original;
-
-        return (
-          <ActionModal
-            actions={[
-              {
-                label: "View Transactions",
-                onClick: () =>
-                  navigate({
-                    to: routes.TRANSACTION,
-                    params: { linkId: link.id },
-                  }),
-              },
-              {
-                label: "Copy Link",
-                onClick: () => {
-                  navigator.clipboard.writeText(link.link);
-                  toast.success("Link copied to clipboard");
-                },
-              },
-              {
-                label: "Delete",
-                color: "red",
-                onClick: () =>
-                  openModal({
-                    content: <DeleteLinkModal linkId={link.id} />,
-                  }),
-              },
-            ]}
-          />
-        );
-      },
+      cell: ({ row }) => <RowActions link={row.original} navigate={navigate} openModal={openModal} />,
     },
   ];
 
@@ -129,11 +126,7 @@ const LinkTable = () => {
                     onClick={header.column.getToggleSortingHandler()}
                     className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 hover:bg-gray-100 transition"
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-
+                    {flexRender(header.column.columnDef.header, header.getContext())}
                     {{
                       asc: " 🔼",
                       desc: " 🔽",
@@ -149,30 +142,13 @@ const LinkTable = () => {
         <TableBody>
           {formattedLinks.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="text-center bg-gray-50 py-20"
-              >
+              <TableCell colSpan={columns.length} className="text-center bg-gray-50 py-20">
                 <div className="flex flex-col items-center gap-3 text-gray-500">
-                  <svg
-                    className="w-16 h-16 opacity-30"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4"
-                    />
+                  <svg className="w-16 h-16 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4" />
                   </svg>
-
                   <p className="text-lg font-semibold">No links yet</p>
-
-                  <p className="text-sm text-gray-400">
-                    Create a payment link to see it appear here.
-                  </p>
+                  <p className="text-sm text-gray-400">Create a payment link to see it appear here.</p>
                 </div>
               </TableCell>
             </TableRow>
@@ -181,21 +157,13 @@ const LinkTable = () => {
               <TableRow
                 key={row.id}
                 className="hover:bg-gray-50 transition duration-200 cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: routes.TRANSACTION,
-                    params: { linkId: row.original.id },
-                  })
-                }
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className="px-6 py-4 text-sm text-gray-700"
                     onClick={(e) => {
-                      if (cell.column.id === "actions") {
-                        e.stopPropagation();
-                      }
+                      if (cell.column.id === "actions") e.stopPropagation();
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -211,8 +179,7 @@ const LinkTable = () => {
       {showPagination && (
         <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t">
           <div className="text-sm text-gray-500">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
           </div>
 
           <div className="flex items-center gap-2">
@@ -223,7 +190,6 @@ const LinkTable = () => {
             >
               Previous
             </button>
-
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
