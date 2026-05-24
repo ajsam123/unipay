@@ -1,6 +1,5 @@
 import Input from "../../components/Input";
 import mail from "./../../assets/mail-01.svg";
-import lock from "./../../assets/lock-03.svg";
 import Button from "../../components/Button";
 import { routes } from "./../../constants/routes.js";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -8,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schema.js";
 import { useAuth } from "../../hooks/useAuth.js";
+import PasswordInput from "../../components/PasswordInput.jsx";
+import { PhoneCallIcon, User, User2Icon } from "lucide-react";
 
 const Signup = () => {
   const router = useRouter();
@@ -63,6 +64,7 @@ const Signup = () => {
             label="First Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your first name"
+            leftIcon={<User2Icon className="text-neutral-black-9"/>}
             error={errors.first_name?.message}
           />
 
@@ -71,6 +73,7 @@ const Signup = () => {
             label="Last Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your last name"
+            leftIcon={<User2Icon className="text-neutral-black-9"/>}
             error={errors.last_name?.message}
           />
         </div>
@@ -86,29 +89,24 @@ const Signup = () => {
 
         <Input
           {...register("phone_number")}
-          leftIcon={<img src={mail} alt="mail icon" />}
+          leftIcon={<PhoneCallIcon className="text-neutral-black-9"/>}
           label="Phone number"
           className="w-full border-neutral-black-9"
           placeholder="Your phone number"
           error={errors.phone_number?.message}
         />
 
-        <Input
+        <PasswordInput
           {...register("password")}
-          leftIcon={<img src={lock} alt="lock icon" />}
-          type="password"
           label="Password"
-          className="w-full border-neutral-black-9"
           placeholder="Your password"
           error={errors.password?.message}
         />
 
-        <Input
+        <PasswordInput
           {...register("confirm_password")}
-          leftIcon={<img src={lock} alt="lock icon" />}
-          className="w-full border-neutral-black-9"
           label="Confirm Password"
-          type="password"
+          placeholder="Confirm your password"
           error={errors.confirm_password?.message}
         />
 

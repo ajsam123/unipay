@@ -4,11 +4,11 @@ import { useRouter, Link } from "@tanstack/react-router";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import mail from "./../../assets/mail-01.svg";
-import lock from "./../../assets/lock-03.svg";
 import { routes } from "../../constants/routes.js";
 import { loginschema } from "../../schemas/auth.schema.js";
 import toast from "react-hot-toast";
 import { useAuth } from "../../hooks/useAuth.js";
+import PasswordInput from "../../components/PasswordInput.jsx";
 
 const Login = () => {
   const router = useRouter(); // use TanStack Router
@@ -64,12 +64,9 @@ const Login = () => {
           error={errors.email?.message}
         />
 
-        <Input
+        <PasswordInput
           {...register("password")}
-          leftIcon={<img src={lock} alt="lock icon" />}
           label="Password"
-          type="password"
-          className="w-full border-neutral-black-9"
           placeholder="Your password"
           error={errors.password?.message}
         />
