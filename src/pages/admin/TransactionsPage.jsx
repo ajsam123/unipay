@@ -1,5 +1,5 @@
 import TransactionTable from "../../tables/TransactionTable";
-import { transactionsPageRoute } from "../../Router.jsx";
+import {transactionsPageRoute} from "../../router.jsx"
 import { userLinks } from "../../data/links.js";
 import { Link } from "@tanstack/react-router";
 import { routes } from "../../constants/routes.js";
