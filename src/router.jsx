@@ -11,6 +11,7 @@ import AppLayout from "./layouts/AppLayout";
 import App from "./App";
 
 // pages
+import Homepage from "./pages/homepage/Homepage";
 import Login from "./pages/admin/Login";
 import Signup from "./pages/admin/Signup";
 import OnboardingOne from "./pages/admin/OnboardingOne";
@@ -38,6 +39,12 @@ const rootRoute = createRootRoute({
 });
 
 /* ================= AUTH ROUTES ================= */
+
+const homepageRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: routes.HOMEPAGE,
+  component: Homepage,
+});
 
 const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -201,6 +208,7 @@ const routeTree = rootRoute.addChildren([
     paymentPagesRoute,
     transactionsPageRoute,
     verificationCentre,
+    homepageRoute
   ]),
 ]);
 

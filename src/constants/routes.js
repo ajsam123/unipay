@@ -1,4 +1,5 @@
 export const routes = {
+  HOMEPAGE: "/",  
   LOGIN: "/login",
   SIGNUP: "/signup",
   VERIFYEMAIL: "/verify-email",
