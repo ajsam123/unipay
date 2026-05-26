@@ -13,7 +13,7 @@ const Hero = () => {
 
         {/* Heading */}
         <h1 className="text-3xl md:text-[47px] font-bold text-gray-900 max-w-3xl">
-          The modern way for student leaders to collect payments
+          The modern platform for student leaders to manage payments
         </h1>
 
         {/* Subtext */}
