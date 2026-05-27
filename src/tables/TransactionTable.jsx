@@ -18,12 +18,14 @@ import {
 import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
-import { useGetTransactions } from "../hooks/useTransactions.js";
+import { useGetTransactionsByLink } from "../hooks/useTransactions.js";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
 
-  const { data: transactions, isLoading } = useGetTransactions();
+  const { data: transactions, isLoading } = useGetTransactionsByLink({
+    id: linkId,
+  });
 
   const handleTransactions = () => {
     exportTransactionsPDF(transactions, linkId);

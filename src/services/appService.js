@@ -25,15 +25,15 @@ export const createPaymentLink = async (data) => {
   const res = await appApi.post("/api/link/create/", data);
   return res.data;
 };
-0;
+
 export const getPaymentLinks = async () => {
-  const res = await appApi.get("/links/");
+  const res = await appApi.get("api/links/");
   return res.data;
 };
 
 export const deletepaymentLink = async (id) => {
-  console.log(id)
-  const res = await appApi.delete(`/links/${id}/delete/`);
+  console.log(id);
+  const res = await appApi.delete(`api/links/${id}/delete/`);
   return res.data;
 };
 
@@ -67,5 +67,9 @@ export const updateUser = async (data) => {
 // ---------------- GET PENDING VERIFICATIONS ----------------
 export const getTransactions = async () => {
   const res = await appApi.get("/transactions/");
+  return res.data;
+};
+export const getTransactionsByLink = async ({ id }) => {
+  const res = await appApi.get(`api/links/${id}/transactions/`);
   return res.data;
 };
