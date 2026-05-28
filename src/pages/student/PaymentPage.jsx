@@ -11,19 +11,18 @@ import { usePaymentPage } from "../../hooks/usePaymentPage";
 import { useParams } from "@tanstack/react-router";
 
 const PaymentPage = () => {
-  const { paymentPageMutation } = usePaymentPage();
-  const router = useRouter();
   const { slug } = useParams({ from: "/pay/$slug" });
+  const { paymentPageMutation, paymentInfoQuery } = usePaymentPage(slug);
+
+  const paymentInfoLoading = paymentInfoQuery.isLoading;
 
   const submitHandler = (data) => {
+    console.log("Form Data:", data);
     paymentPageMutation.mutate(
       { slug, data },
       {
-        onSuccess: () => {
-          router.navigate({
-            //   to: routes.VE,
-            //   search: { email: data.email },
-          });
+        onSuccess: (res) => {
+          window.location.href = res.authorization_url;
         },
       },
     );
@@ -41,7 +40,7 @@ const PaymentPage = () => {
     defaultValues: {
       first_name: "",
       last_name: "",
-      matric_number: "",
+      matric_no: "",
       email: "",
     },
   });
@@ -53,11 +52,13 @@ const PaymentPage = () => {
           <Logo />
 
           <h1 className="text-2xl font-bold text-center">
-            Payment for Class Due
+            {paymentInfoLoading ? "Loading..." : paymentInfoQuery.data?.title}
           </h1>
 
           <span className="text-gray-600 text-center">
-            This is the class payment
+            {paymentInfoLoading
+              ? "Loading description..."
+              : paymentInfoQuery.data?.description}
           </span>
         </div>
 
@@ -86,9 +87,9 @@ const PaymentPage = () => {
           <Input
             label="Matric Number"
             placeholder="Matric Number"
-            {...register("matric_number")}
+            {...register("matric_no")}
             className="w-full border-neutral-black-9"
-            error={errors.matric_number?.message}
+            error={errors.matric_no?.message}
             leftIcon={<UserIcon className="text-gray-400" />}
           />
 
@@ -101,7 +102,9 @@ const PaymentPage = () => {
             leftIcon={<Mail className="text-gray-400" />}
           />
 
-          <Button>Proceed to Payment</Button>
+          <Button isLoading={paymentPageMutation.isPending}>
+            Proceed to Payment
+          </Button>
         </form>
       </div>
     </section>

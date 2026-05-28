@@ -62,6 +62,6 @@ export const resetPasswordSchema = z
 export const paymentPageSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  matric_number: z.string().min(1, "Matric number is required"),
+  matric_no: z.string().min(1, "Matric number is required"),
   email: z.string().email("Invalid email"),
 });

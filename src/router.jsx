@@ -55,7 +55,7 @@ const authLayoutRoute = createRoute({
 
 const publicPaymentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/pay/$id",
+  path: "/pay/$slug",
   component: PaymentPage,
 });
 

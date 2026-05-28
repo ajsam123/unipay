@@ -1,13 +1,21 @@
-import { useMutation } from "@tanstack/react-query";
-import { payment } from "../services/paymentPageService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { payment, paymentInfo } from "../services/paymentPageService";
 import { handleApiError } from "../utils/getErrorMessage";
 
-export function usePaymentPage() {
+export function usePaymentPage(slug) {
   const paymentPageMutation = useMutation({
     mutationFn: payment,
-    onError: (error) => {
-      handleApiError(error);
-    },
+    onError: handleApiError,
   });
-  return paymentPageMutation;
+
+  const paymentInfoQuery = useQuery({
+    queryKey: ["payment-info", slug],
+    queryFn: () => paymentInfo({ slug }),
+    enabled: !!slug,
+  });
+
+  return {
+    paymentPageMutation,
+    paymentInfoQuery,
+  };
 }
