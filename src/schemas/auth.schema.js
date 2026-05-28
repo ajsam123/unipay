@@ -58,3 +58,10 @@ export const resetPasswordSchema = z
     message: "Passwords do not match",
     path: ["Confirm_new_password"],
   });
+
+export const paymentPageSchema = z.object({
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  matric_number: z.string().min(1, "Matric number is required"),
+  email: z.string().email("Invalid email"),
+});

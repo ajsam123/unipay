@@ -31,6 +31,7 @@ import { routes } from "./constants/routes";
 import z from "zod";
 import TransactionsPage from "./pages/admin/TransactionsPage";
 import VerificationCentrePage from "./superadmin/VerificationCentrePage";
+import PaymentPage from "./pages/student/PaymentPage";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -50,6 +51,12 @@ const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "auth",
   component: AuthLayout,
+});
+
+const publicPaymentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/pay/$id",
+  component: PaymentPage,
 });
 
 const loginRoute = createRoute({
@@ -142,13 +149,13 @@ const resetPasswordRoute = createRoute({
 const appLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "app",
-  // beforeLoad: () => {
-  //   const token = localStorage.getItem("access");
+  beforeLoad: () => {
+    const token = localStorage.getItem("access");
 
-  //   if (!token) {
-  //     throw redirect({ to: routes.LOGIN });
-  //   }
-  // },
+    if (!token) {
+      throw redirect({ to: routes.LOGIN });
+    }
+  },
   component: AppLayout,
 });
 
@@ -208,8 +215,9 @@ const routeTree = rootRoute.addChildren([
     paymentPagesRoute,
     transactionsPageRoute,
     verificationCentre,
-    homepageRoute
   ]),
+  homepageRoute,
+  publicPaymentRoute,
 ]);
 
 export const router = createRouter({ routeTree });
