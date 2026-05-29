@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -27,43 +27,80 @@ const TransactionTable = ({ linkId }) => {
     id: linkId,
   });
 
+  // API RETURNS { count, next, previous, results: [] }
+  const transactionData = transactions?.results || [];
+
   const handleTransactions = () => {
-    exportTransactionsPDF(transactions, linkId);
+    exportTransactionsPDF(transactionData, linkId);
     toast.success("Exporting PDF...");
   };
 
   const columns = [
-    { accessorKey: "fullName", header: "Payer Name" },
-    { accessorKey: "matricNo", header: "Matric No" },
     {
-      accessorKey: "amountPaid",
+      accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+      id: "fullName",
+      header: "Payer Name",
+    },
+
+    {
+      accessorKey: "matric_number",
+      header: "Matric No",
+    },
+
+    {
+      accessorKey: "amount_paid",
       header: "Amount",
     },
-    { accessorKey: "status", header: "Status" },
+
     {
-      accessorKey: "datePaid",
+      accessorKey: "status",
+      header: "Status",
+    },
+
+    {
+      accessorKey: "paid_at",
       header: "Date",
     },
   ];
 
   const table = useReactTable({
-    data: transactions || [],
+    data: transactionData,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
 
-  const showPagination = transactions?.length > 10;
-  const hasTransactions = transactions?.length > 0;
+  const showPagination = transactionData.length > 10;
+  const hasTransactions = transactionData.length > 0;
+
+  // LOADING STATE
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="space-y-4 animate-pulse">
+          <div className="h-5 w-1/3 bg-gray-200 rounded"></div>
+
+          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>
-        {/* Header */}
+        {/* ================= HEADER ================= */}
         {hasTransactions && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -75,6 +112,7 @@ const TransactionTable = ({ linkId }) => {
                     className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 hover:bg-gray-100 transition"
                   >
                     {header.column.columnDef.header}
+
                     {{
                       asc: " 🔼",
                       desc: " 🔽",
@@ -86,7 +124,7 @@ const TransactionTable = ({ linkId }) => {
           </TableHeader>
         )}
 
-        {/* Body */}
+        {/* ================= BODY ================= */}
         <TableBody>
           {!hasTransactions ? (
             <TableRow>
@@ -108,7 +146,9 @@ const TransactionTable = ({ linkId }) => {
                       d="M9 17v-6h6v6m-3-9V5m0 0H8m4 0h4"
                     />
                   </svg>
+
                   <p className="text-lg font-semibold">No transactions yet</p>
+
                   <p className="text-sm text-gray-400">
                     Once payments are made, they will appear here.
                   </p>
@@ -126,13 +166,19 @@ const TransactionTable = ({ linkId }) => {
                     key={cell.id}
                     className="px-6 py-4 text-sm text-gray-700"
                   >
-                    {cell.column.id === "amountPaid" ? (
+                    {/* AMOUNT */}
+                    {cell.column.id === "amount_paid" ? (
                       <span className="font-semibold text-gray-900">
-                        ₦{cell.getValue().toLocaleString()}
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                        }).format(Number(cell.getValue()))}
                       </span>
-                    ) : cell.column.id === "datePaid" ? (
+                    ) : /* DATE */
+                    cell.column.id === "paid_at" ? (
                       new Date(cell.getValue()).toLocaleDateString("en-GB")
-                    ) : cell.column.id === "status" ? (
+                    ) : /* STATUS */
+                    cell.column.id === "status" ? (
                       <span
                         className={`px-3 py-1 text-xs font-medium rounded-full ${
                           cell.getValue() === "success"
@@ -142,9 +188,11 @@ const TransactionTable = ({ linkId }) => {
                               : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {cell.getValue()}
+                        {cell.getValue().charAt(0).toUpperCase() +
+                          cell.getValue().slice(1)}
                       </span>
                     ) : (
+                      /* DEFAULT */
                       cell.getValue()
                     )}
                   </TableCell>
@@ -155,7 +203,7 @@ const TransactionTable = ({ linkId }) => {
         </TableBody>
       </Table>
 
-      {/* Pagination */}
+      {/* ================= PAGINATION ================= */}
       {showPagination && (
         <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t">
           <div className="text-sm text-gray-500">
@@ -183,7 +231,7 @@ const TransactionTable = ({ linkId }) => {
         </div>
       )}
 
-      {/* Export Button */}
+      {/* ================= EXPORT BUTTON ================= */}
       {hasTransactions && (
         <div className="flex justify-end px-6 py-4 border-t bg-white">
           <Button

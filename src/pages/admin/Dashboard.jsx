@@ -2,10 +2,11 @@ import React from "react";
 import StatCard from "../../components/StatCard";
 import { Link, Wallet, Clock, AlertTriangle } from "lucide-react";
 import RecentTransactions from "../../components/RecentTransactions";
+import AllTransactionTable from "../../tables/AllTransactionTable";
 
 const Dashboard = () => {
   return (
-    <div className="">
+    <div className=" flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Links"
@@ -40,7 +41,7 @@ const Dashboard = () => {
         />
       </div>
       <div>
-        <RecentTransactions />
+        <AllTransactionTable />
       </div>
     </div>
   );

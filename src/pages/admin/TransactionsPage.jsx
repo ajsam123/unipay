@@ -1,15 +1,14 @@
 import TransactionTable from "../../tables/TransactionTable";
-import {transactionsPageRoute} from "../../router.jsx"
-import { userLinks } from "../../data/links.js";
+import { transactionsPageRoute } from "../../router.jsx";
+
 import { Link } from "@tanstack/react-router";
 import { routes } from "../../constants/routes.js";
 import chevron from "./../../assets/chevron-left.svg";
 
 const TransactionsPage = () => {
   const { linkId } = transactionsPageRoute.useParams();
-  // const { l }
-  const transactionName =
-    userLinks.find((x) => x.id === linkId)?.dueName || "Transactions";
+
+  const transactionName = "Transactions";
   return (
     <section>
       <Link to={routes.PAYMENTPAGES}>

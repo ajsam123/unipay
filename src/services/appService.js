@@ -32,8 +32,7 @@ export const getPaymentLinks = async () => {
 };
 
 export const deletepaymentLink = async (id) => {
-  console.log(id);
-  const res = await appApi.delete(`api/links/${id}/delete/`);
+  const res = await appApi.delete(`/links/${id}/delete/`);
   return res.data;
 };
 
@@ -66,7 +65,7 @@ export const updateUser = async (data) => {
 
 // ---------------- GET PENDING VERIFICATIONS ----------------
 export const getTransactions = async () => {
-  const res = await appApi.get("/transactions/");
+  const res = await appApi.get("api/transactions/");
   return res.data;
 };
 export const getTransactionsByLink = async ({ id }) => {
