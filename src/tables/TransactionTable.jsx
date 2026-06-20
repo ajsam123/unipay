@@ -27,6 +27,9 @@ const TransactionTable = ({ linkId }) => {
     id: linkId,
   });
 
+  console.log(transactions, "transactions");
+  console.log(linkId, "linkId");
+
   // API RETURNS { count, next, previous, results: [] }
   const transactionData = transactions?.results || [];
 

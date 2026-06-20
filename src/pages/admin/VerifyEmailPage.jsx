@@ -19,7 +19,7 @@ const VerifyEmailPage = () => {
       {
         onSuccess: () => {
           toast.success("Email verified successfully");
-          router.navigate({ to: routes.LOGIN });
+          router.navigate({ to: routes.ONBOARDINGONE });
         },
       },
     );
