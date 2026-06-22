@@ -63,12 +63,24 @@ export const updateUser = async (data) => {
   return res.data;
 };
 
-// ---------------- GET PENDING VERIFICATIONS ----------------
 export const getTransactions = async () => {
   const res = await appApi.get("api/transactions/");
   return res.data;
 };
+
+// export const getTransactionDetails = async ({ id }) => {
+//   const res = await appApi.get(`/transactions/${id}/`);
+//   return res.data;
+// };
+
 export const getTransactionsByLink = async ({ id }) => {
   const res = await appApi.get(`api/links/${id}/transactions/`);
+  return res.data;
+};
+
+// Bank details
+
+export const getBankDetails = async () => {
+  const res = await appApi.get("/bank-details/me/");
   return res.data;
 };

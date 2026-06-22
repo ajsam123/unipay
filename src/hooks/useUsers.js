@@ -1,9 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getUsers,
-  getPendingVerifications,
-  updateUser,
-} from "../services/appService";
+import { getUsers, updateUser } from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
 
 // ---------------- GET ALL USERS ----------------
@@ -16,15 +12,15 @@ export function useUsers() {
   });
 }
 
-// ---------------- GET PENDING VERIFICATIONS ----------------
-export function usePendingVerifications() {
-  return useQuery({
-    queryKey: ["pendingVerifications"],
-    queryFn: getPendingVerifications,
-    onError: handleApiError,
-    refetchOnWindowFocus: false,
-  });
-}
+// // ---------------- GET PENDING VERIFICATIONS ----------------
+// export function usePendingVerifications() {
+//   return useQuery({
+//     queryKey: ["pendingVerifications"],
+//     queryFn: getPendingVerifications,
+//     onError: handleApiError,
+//     refetchOnWindowFocus: false,
+//   });
+// }
 
 // ---------------- UPDATE USER ----------------
 export function useUpdateUser() {

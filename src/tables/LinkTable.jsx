@@ -72,7 +72,7 @@ const LinkTable = () => {
       id: link.id,
       dueName: link.title,
       amount: Number(link.amount_per_student),
-      link: link.hosted_url,
+      link: link.payment_link,
       collected: Number(link.total_amount_collected),
       payers: link.total_student_paid,
     })) || [];

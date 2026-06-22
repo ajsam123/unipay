@@ -12,6 +12,7 @@ export function useGetTransactions() {
     refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
   });
 }
+
 export function useGetTransactionsByLink({ id }) {
   return useQuery({
     queryKey: ["transactions-by-link"],
