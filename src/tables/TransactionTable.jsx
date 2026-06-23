@@ -18,18 +18,23 @@ import {
 import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
-import { useGetTransactionsByLink } from "../hooks/useTransactions.js";
+import {
+  // useGetTransactionDetails,
+  useGetTransactionsByLink,
+} from "../hooks/useTransactions.js";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
+  // const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
-  const { data: transactions, isLoading } = useGetTransactionsByLink({
-    id: linkId,
-  });
+  const { data: transactions, isLoading: transactionLoading } =
+    useGetTransactionsByLink({
+      id: linkId,
+    });
 
-  console.log(transactions, "transactions");
-  console.log(linkId, "linkId");
-
+  // const { data: transactionDetails, isLoading: isDetailsLoading } =
+  //   useGetTransactionDetails({ id: linkId });
+  // console.log("Transaction Details:", transactionDetails);
   // API RETURNS { count, next, previous, results: [] }
   const transactionData = transactions?.results || [];
 
@@ -85,7 +90,7 @@ const TransactionTable = ({ linkId }) => {
   const hasTransactions = transactionData.length > 0;
 
   // LOADING STATE
-  if (isLoading) {
+  if (transactionLoading) {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="space-y-4 animate-pulse">
@@ -163,6 +168,9 @@ const TransactionTable = ({ linkId }) => {
               <TableRow
                 key={row.id}
                 className="hover:bg-gray-50 transition duration-200"
+                onClick={() => {
+                  setSelectedTransactionId(row.reference);
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

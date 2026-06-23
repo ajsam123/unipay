@@ -1,6 +1,10 @@
 // hooks/useTransactions.js
 import { useQuery } from "@tanstack/react-query";
-import { getTransactions, getTransactionsByLink } from "../services/appService";
+import {
+  // getTransactionDetails,
+  getTransactions,
+  getTransactionsByLink,
+} from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
 
 // ----------------- QUERY -----------------
@@ -12,6 +16,15 @@ export function useGetTransactions() {
     refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
   });
 }
+
+// export function useGetTransactionDetails({ id }) {
+//   return useQuery({
+//     queryKey: ["transaction-details"],
+//     queryFn: () => getTransactionDetails({ id }),
+//     onError: handleApiError,
+//     refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
+//   });
+// }
 
 export function useGetTransactionsByLink({ id }) {
   return useQuery({
