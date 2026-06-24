@@ -10,16 +10,22 @@ const TransactionsPage = () => {
 
   const transactionName = "Transactions";
   return (
-    <section>
+    <section className="flex flex-col gap-4">
       <Link to={routes.PAYMENTPAGES}>
         {" "}
         <figure className="grid place-items-center border w-16 h-10 rounded-full">
           <img src={chevron} />
         </figure>
       </Link>
-      <div className="body-large-semibold my-2">
-        Transaction List for {transactionName}
+      <div className="flex flex-col gap-1">
+        <div className="body-large-semibold my-2">
+          Transaction List for {transactionName}
+        </div>
+        <p className="text-sm text-gray-500">
+          Click a transaction to see more information and download the receipt.
+        </p>
       </div>
+
       <TransactionTable linkId={linkId} />
     </section>
   );

@@ -1,7 +1,7 @@
 // hooks/useTransactions.js
 import { useQuery } from "@tanstack/react-query";
 import {
-  // getTransactionDetails,
+  getTransactionDetails,
   getTransactions,
   getTransactionsByLink,
 } from "../services/appService";
@@ -17,14 +17,15 @@ export function useGetTransactions() {
   });
 }
 
-// export function useGetTransactionDetails({ id }) {
-//   return useQuery({
-//     queryKey: ["transaction-details"],
-//     queryFn: () => getTransactionDetails({ id }),
-//     onError: handleApiError,
-//     refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
-//   });
-// }
+export function useGetTransactionDetails({ id }) {
+  return useQuery({
+    queryKey: ["transaction-details", id],
+    queryFn: () => getTransactionDetails({ id }),
+    onError: handleApiError,
+    enabled: !!id,
+    refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
+  });
+}
 
 export function useGetTransactionsByLink({ id }) {
   return useQuery({

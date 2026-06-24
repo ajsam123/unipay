@@ -12,7 +12,7 @@ export default function Modal() {
 
   return (
     <Dialog open={open} onOpenChange={closeModal}>
-      <DialogContent className="sm:max-w-lg w-full rounded-2xl border-none overflow-visible">
+      <DialogContent className="sm:max-w-lg max-h-2/3 w-full rounded-2xl border-none overflow-auto">
         <Content {...modalProps} onClose={closeModal} />
       </DialogContent>
     </Dialog>

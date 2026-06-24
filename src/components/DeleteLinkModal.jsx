@@ -9,11 +9,11 @@ const DeleteLinkModal = ({ linkId, onClose }) => {
   const { mutate: deleteLink, isLoading } = useDeleteLink();
 
   const handleDelete = () => {
-    deleteLink("efe7bd9d-30f2-41ee-bcce-a012a618f783", {
+    deleteLink(linkId, {
       onSuccess: () => {
         toast.success("Link deleted successfully");
         onClose(); // Just call onClose
-      }
+      },
     });
   };
 

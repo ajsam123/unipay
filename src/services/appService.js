@@ -6,6 +6,12 @@ export const onboarding = async (data) => {
   return res.data;
 };
 
+/* DASHBOARD */
+export const getDashboardData = async () => {
+  const res = await appApi.get("/api/dashboard/summary/");
+  return res.data;
+};
+
 export const getBanks = async () => {
   const res = await appApi.get("/api/banks/");
   return res.data;

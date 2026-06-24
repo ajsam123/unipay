@@ -18,24 +18,21 @@ import {
 import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
-import {
-  // useGetTransactionDetails,
-  useGetTransactionsByLink,
-} from "../hooks/useTransactions.js";
+import { useGetTransactionsByLink } from "../hooks/useTransactions.js";
+import { useModalStore } from "../store/modalStore.js";
+import TransactionDetailsModal from "../components/TransactionDetailsModal.jsx";
+import { ChevronRight } from "lucide-react";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
-  // const [selectedTransactionId, setSelectedTransactionId] = useState(null);
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const { data: transactions, isLoading: transactionLoading } =
     useGetTransactionsByLink({
       id: linkId,
     });
 
-  // const { data: transactionDetails, isLoading: isDetailsLoading } =
-  //   useGetTransactionDetails({ id: linkId });
-  // console.log("Transaction Details:", transactionDetails);
-  // API RETURNS { count, next, previous, results: [] }
+  const openModal = useModalStore((s) => s.openModal);
   const transactionData = transactions?.results || [];
 
   const handleTransactions = () => {
@@ -112,7 +109,13 @@ const TransactionTable = ({ linkId }) => {
         {hasTransactions && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-gray-50">
+              <TableRow
+                key={headerGroup.id}
+                className="bg-gray-50 cursor-pointer
+    hover:bg-gray-50
+    active:bg-gray-100
+    transition"
+              >
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
@@ -167,10 +170,12 @@ const TransactionTable = ({ linkId }) => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="hover:bg-gray-50 transition duration-200"
-                onClick={() => {
-                  setSelectedTransactionId(row.reference);
-                }}
+                className="hover:bg-gray-100 transition duration-200 cursor-pointer"
+                onClick={() =>
+                  openModal(TransactionDetailsModal, {
+                    transactionId: row.original.id,
+                  })
+                }
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

@@ -12,16 +12,6 @@ export function useUsers() {
   });
 }
 
-// // ---------------- GET PENDING VERIFICATIONS ----------------
-// export function usePendingVerifications() {
-//   return useQuery({
-//     queryKey: ["pendingVerifications"],
-//     queryFn: getPendingVerifications,
-//     onError: handleApiError,
-//     refetchOnWindowFocus: false,
-//   });
-// }
-
 // ---------------- UPDATE USER ----------------
 export function useUpdateUser() {
   const queryClient = useQueryClient();
