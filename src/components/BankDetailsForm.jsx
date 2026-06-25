@@ -1,45 +1,44 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import Input from "../components/Input";
 import Combobox from "../components/ComboBox";
 import Button from "../components/Button";
 
 import { bankDetailsSchema } from "../schemas/bankDetails.schema";
-import {
-  getBanks,
-  resolveAccount,
-  createSubaccount,
-} from "../services/appService";
+import { resolveAccount, createSubaccount } from "../services/appService";
 import toast from "react-hot-toast";
 import { useModalStore } from "../store/modalStore";
+
+import {
+  useGetBankDetails,
+  useGetBanks,
+  useUpdateBankDetails,
+} from "../hooks/useBank";
 
 const BankDetailsForm = () => {
   const { closeModal } = useModalStore((s) => s);
 
-  /* -------------------- Fetch Banks -------------------- */
-  const { data: banks = [] } = useQuery({
-    queryKey: ["banks"],
-    queryFn: getBanks,
-    staleTime: Infinity,
-    select: (data) => {
-      if (!Array.isArray(data)) return [];
-      return Array.from(new Map(data.map((b) => [b.code, b])).values());
-    },
-  });
+  const { data: banks = [] } = useGetBanks();
 
-  /* -------------------- Form Setup -------------------- */
+  const { data: bankDetails } = useGetBankDetails();
+
+  const updateBankDetailsMutation = useUpdateBankDetails();
+
+  const isEditing = !!bankDetails;
+
   const {
     register,
     handleSubmit,
     control,
     watch,
+    reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
     resolver: zodResolver(bankDetailsSchema),
-    mode: "all", // validates on submit + change
+    mode: "all",
     defaultValues: {
       bankCode: "",
       accountNumber: "",
@@ -49,10 +48,28 @@ const BankDetailsForm = () => {
   const bankCode = watch("bankCode");
   const accountNumber = watch("accountNumber");
 
-  /* -------------------- Resolve Account Mutation -------------------- */
+  const originalBankCode = bankDetails?.bank_code;
+  const originalAccountNumber = bankDetails?.account_number;
+
+  const hasChanged =
+    bankCode !== originalBankCode || accountNumber !== originalAccountNumber;
+
+  /* -------------------- Populate Existing Values -------------------- */
+
+  useEffect(() => {
+    if (bankDetails) {
+      reset({
+        bankCode: bankDetails.bank_code,
+        accountNumber: bankDetails.account_number,
+      });
+    }
+  }, [bankDetails, reset]);
+
+  /* -------------------- Resolve Account -------------------- */
+
   const resolveMutation = useMutation({
     mutationFn: resolveAccount,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Account verified successfully");
     },
     onError: () => {
@@ -60,85 +77,126 @@ const BankDetailsForm = () => {
     },
   });
 
-  /* -------------------- Create Subaccount Mutation -------------------- */
+  /* -------------------- Create Subaccount -------------------- */
+
   const createSubaccountMutation = useMutation({
     mutationFn: createSubaccount,
     onSuccess: () => {
-      toast.success("Account added successfully");
+      toast.success("Bank account added successfully");
       closeModal();
     },
-    onError: (error) => {
-      console.error("Failed to create subaccount:", error);
-      toast.error("Failed to add account");
+    onError: () => {
+      toast.error("Failed to add bank account");
     },
   });
 
-  /* -------------------- Auto Resolve on 10-digit Account -------------------- */
+  /* -------------------- Auto Verify -------------------- */
+
   useEffect(() => {
-    if (
-      bankCode &&
-      accountNumber?.length === 10 &&
-      (!resolveMutation.data ||
-        resolveMutation.data.account_number !== accountNumber)
-    ) {
-      resolveMutation.mutate({
-        bank_code: bankCode,
-        account_number: accountNumber,
-      });
-    }
-  }, [bankCode, accountNumber]);
+    const shouldVerify =
+      bankCode && accountNumber?.length === 10 && (!isEditing || hasChanged);
+
+    if (!shouldVerify) return;
+
+    resolveMutation.mutate({
+      bank_code: bankCode,
+      account_number: accountNumber,
+    });
+  }, [bankCode, accountNumber, hasChanged]);
 
   /* -------------------- Derived States -------------------- */
+
   const isAccountVerified =
-    resolveMutation.isSuccess && resolveMutation.data?.accountName;
+    isEditing && !hasChanged ? true : !!resolveMutation.data?.accountName;
+
+  const accountName = hasChanged
+    ? resolveMutation.data?.accountName
+    : bankDetails?.account_name;
+
+  const isSaving =
+    createSubaccountMutation.isPending || updateBankDetailsMutation.isPending;
 
   const isButtonDisabled =
     !isValid ||
     resolveMutation.isPending ||
     (!isAccountVerified && accountNumber?.length < 10) ||
     isSubmitting ||
-    createSubaccountMutation.isPending;
+    isSaving;
 
-  /* -------------------- Handlers -------------------- */
+  /* -------------------- Verify Handler -------------------- */
+
   const handleVerify = () => {
     if (!bankCode || accountNumber?.length !== 10) {
-      toast.error("Please select a bank and enter a 10-digit account number");
+      toast.error(
+        "Please select a bank and enter a valid 10-digit account number",
+      );
       return;
     }
+
     resolveMutation.mutate({
       bank_code: bankCode,
       account_number: accountNumber,
     });
   };
 
+  /* -------------------- Submit -------------------- */
+
   const onSubmit = (data) => {
     if (!isAccountVerified) return;
+
+    if (isEditing) {
+      updateBankDetailsMutation.mutate(
+        {
+          bank_code: data.bankCode,
+          account_number: data.accountNumber,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Bank details updated successfully");
+            closeModal();
+          },
+          onError: () => {
+            toast.error("Failed to update bank details");
+          },
+        },
+      );
+
+      return;
+    }
 
     createSubaccountMutation.mutate({
       bank_code: data.bankCode,
       account_number: data.accountNumber,
-      title: resolveMutation.data.accountName,
+      title: resolveMutation.data?.accountName,
       percentage_charge: 0,
     });
   };
 
   /* -------------------- Button Label -------------------- */
+
   const buttonLabel = resolveMutation.isPending
     ? "Verifying..."
     : !isAccountVerified
       ? "Verify"
-      : createSubaccountMutation.isPending
-        ? "Creating..."
-        : "Add Bank";
+      : isSaving
+        ? isEditing
+          ? "Updating..."
+          : "Creating..."
+        : isEditing
+          ? "Update Bank"
+          : "Add Bank";
 
   /* -------------------- UI -------------------- */
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-5 w-full"
     >
-      <h1 className='body-medium-semibold'>Bank details</h1>
-      {/* Bank Combobox */}
+      <h1 className="body-medium-semibold">
+        {isEditing ? "Edit Bank Details" : "Bank Details"}
+      </h1>
+
       <Controller
         name="bankCode"
         control={control}
@@ -155,7 +213,6 @@ const BankDetailsForm = () => {
         )}
       />
 
-      {/* Account Number */}
       <Input
         label="Account Number"
         placeholder="Enter 10-digit account number"
@@ -164,20 +221,18 @@ const BankDetailsForm = () => {
         error={errors.accountNumber?.message}
       />
 
-      {/* Verification Feedback */}
       {resolveMutation.isPending && (
         <p className="text-sm text-gray-500">Verifying account...</p>
       )}
-      {isAccountVerified && (
-        <p className="body-medium-semibold text-gray-500">
-        {resolveMutation.data.accountName}
-        </p>
+
+      {accountName && (
+        <p className="body-medium-semibold text-gray-500">{accountName}</p>
       )}
+
       {resolveMutation.isError && (
         <p className="text-sm text-red-500">Failed to verify account</p>
       )}
 
-      {/* Submit / Verify Button */}
       <Button
         type={isAccountVerified ? "submit" : "button"}
         onClick={!isAccountVerified ? handleVerify : undefined}

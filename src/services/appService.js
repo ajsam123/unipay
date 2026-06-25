@@ -90,3 +90,8 @@ export const getBankDetails = async () => {
   const res = await appApi.get("api/bank-details/me/");
   return res.data;
 };
+
+export const updateBankDetails = async (data) => {
+  const res = await appApi.patch("api/bank-details/update/", data);
+  return res.data;
+};

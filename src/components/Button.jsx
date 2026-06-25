@@ -15,7 +15,7 @@ const Button = ({
   const getVariantClasses = (variant) => {
     switch (variant) {
       case "secondary":
-        return "bg-neutral-black-7 text-white hover:bg-neutral-black-9";
+        return "bg-neuatral-black-7 text-white hover:bg-neutral-black-9";
       case "stroke":
         return "border border-sidebar-primary text-primary hover:bg-sidebar-primary/10";
       case "ghost":
