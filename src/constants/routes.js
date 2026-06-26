@@ -1,5 +1,5 @@
 export const routes = {
-  HOMEPAGE: "/",  
+  HOMEPAGE: "/",
   LOGIN: "/login",
   SIGNUP: "/signup",
   VERIFYEMAIL: "/verify-email",
@@ -14,5 +14,6 @@ export const routes = {
   PAYOUT: "/payout",
   PAYMENTPAGES: "/payment-pages",
   TRANSACTION: "/payment-pages/$linkId",
-  VERIFICATIONCENTRE: "/verification-centre"
+  VERIFICATIONCENTRE: "/verification-centre",
+  PAYMENTSUCCESSPAGE: "/payment/success",
 };

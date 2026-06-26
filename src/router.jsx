@@ -32,6 +32,7 @@ import z from "zod";
 import TransactionsPage from "./pages/admin/TransactionsPage";
 import VerificationCentrePage from "./superadmin/VerificationCentrePage";
 import PaymentPage from "./pages/student/PaymentPage";
+import SuccessPage from "./pages/success_page/SuccessPage";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -45,6 +46,12 @@ const homepageRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: routes.HOMEPAGE,
   component: Homepage,
+});
+
+const paymentSuccessRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: routes.PAYMENTSUCCESSPAGE,
+  component: SuccessPage,
 });
 
 const authLayoutRoute = createRoute({
@@ -218,6 +225,7 @@ const routeTree = rootRoute.addChildren([
   ]),
   homepageRoute,
   publicPaymentRoute,
+  paymentSuccessRoute,
 ]);
 
 export const router = createRouter({ routeTree });

@@ -2,6 +2,8 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export const exportTransactionsPDF = (transactions, linkId) => {
+  console.log(transactions);
+  console.log(linkId);
   const doc = new jsPDF();
 
   const primaryBlue = [33, 96, 197];
@@ -9,7 +11,8 @@ export const exportTransactionsPDF = (transactions, linkId) => {
   // =========================
   // FILTER DATA
   // =========================
-  const filtered = transactions.filter((tx) => tx.link === linkId);
+  const filtered = transactions.filter((tx) => tx.link_id === linkId);
+  console.log(filtered);
 
   // const transactionTitle =
   //   transactions.find((tx) => tx.link === linkId)?.transaction_title ||

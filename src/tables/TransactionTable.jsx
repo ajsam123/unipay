@@ -25,7 +25,6 @@ import { ChevronRight } from "lucide-react";
 
 const TransactionTable = ({ linkId }) => {
   const [sorting, setSorting] = useState([]);
-  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const { data: transactions, isLoading: transactionLoading } =
     useGetTransactionsByLink({
@@ -34,6 +33,8 @@ const TransactionTable = ({ linkId }) => {
 
   const openModal = useModalStore((s) => s.openModal);
   const transactionData = transactions?.results || [];
+
+  console.log(transactionData);
 
   const handleTransactions = () => {
     exportTransactionsPDF(transactionData, linkId);
