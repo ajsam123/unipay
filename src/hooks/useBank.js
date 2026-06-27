@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  createSubaccount,
   getBankDetails,
   getBanks,
   updateBankDetails,
@@ -48,3 +49,16 @@ export function useUpdateBankDetails() {
     },
   });
 }
+
+// export function useAddBankDetails() {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: createSubaccount,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: ["bank-details"],
+//       });
+//     },
+//   });
+// }
