@@ -154,7 +154,7 @@ const Profile = () => {
       </div>
 
       {/* ================= DANGER ZONE ================= */}
-      <div className="lg:grid grid-cols-3 lg:gap-10 gap-5 flex flex-col">
+      <div className="lg:grid grid-cols-3 lg:gap-10 gap-5 flex flex-col w-full">
         <ProfileUserInfo title="Danger zone" body="Proceed with Caution" />
 
         <div className="lg:flex gap-5 col-span-2 flex-col w-full">

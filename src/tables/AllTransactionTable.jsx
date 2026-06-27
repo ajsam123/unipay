@@ -13,13 +13,8 @@ import {
   getCoreRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-
-import { useGetTransactions } from "../hooks/useTransactions.js";
-
-const AllTransactionTable = ({ linkId }) => {
+const AllTransactionTable = ({ transactions, isLoading }) => {
   const [sorting, setSorting] = useState([]);
-
-  const { data: transactions, isLoading } = useGetTransactions();
 
   const transactionData = (transactions || []).slice(0, 10); // ✅ HARD LIMIT 10
 
@@ -97,6 +92,7 @@ const AllTransactionTable = ({ linkId }) => {
       <h2 className="text-lg font-semibold text-gray-800 mb-4">
         Recent Transactions
       </h2>
+      <p className="text-gray-500">List of last ten transactions made</p>
 
       <Table>
         <TableHeader>

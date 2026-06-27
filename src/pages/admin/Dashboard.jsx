@@ -53,7 +53,10 @@ const Dashboard = () => {
       </div>
 
       <div>
-        <AllTransactionTable />
+        <AllTransactionTable
+          transactions={dashboardData?.recent_transactions}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
