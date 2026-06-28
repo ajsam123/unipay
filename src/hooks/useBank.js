@@ -50,15 +50,14 @@ export function useUpdateBankDetails() {
   });
 }
 
-// export function useAddBankDetails() {
-//   const queryClient = useQueryClient();
+export function useAddBankDetails() {
+  const queryClient = useQueryClient();
 
-//   return useMutation({
-//     mutationFn: createSubaccount,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: ["bank-details"],
-//       });
-//     },
-//   });
-// }
+  return useMutation({
+    mutationFn: createSubaccount,
+    onSuccess: () => {
+     
+      });
+    },
+  });
+}
