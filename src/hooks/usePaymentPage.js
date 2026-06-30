@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { payment, paymentInfo } from "../services/paymentPageService";
 import { handleApiError } from "../utils/getErrorMessage";
+import { verifyPayment } from "../services/appService";
 
 export function usePaymentPage(slug) {
   const paymentPageMutation = useMutation({
@@ -14,8 +15,14 @@ export function usePaymentPage(slug) {
     enabled: !!slug,
   });
 
+  const verifyPaymentMutation = useMutation({
+    mutationFn: verifyPayment,
+    onError: handleApiError,
+  });
+
   return {
     paymentPageMutation,
     paymentInfoQuery,
+    verifyPaymentMutation,
   };
 }

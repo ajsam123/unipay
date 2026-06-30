@@ -95,3 +95,9 @@ export const updateBankDetails = async (data) => {
   const res = await appApi.patch("api/bank-details/update/", data);
   return res.data;
 };
+
+export const verifyPayment = async ({ reference }) => {
+  console.log(reference);
+  const res = await appApi.get(`api/payments/verify?reference=${reference}`);
+  return res.data;
+};

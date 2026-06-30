@@ -10,10 +10,14 @@ import HowItWorks from "./components/HowItWorks";
 import CTA from "./components/Cta";
 import { routes } from "../../constants/routes";
 import { Link } from "@tanstack/react-router";
+import { usePaymentPage } from "../../hooks/usePaymentPage";
 
+const reference = "imur087vh0c8do3";
 const Homepage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+
+  const { verifyPaymentMutation } = usePaymentPage();
 
   return (
     <section className="w-full">
@@ -52,6 +56,14 @@ const Homepage = () => {
       )}
 
       <Sidebar menuOpen={menuOpen} closeMenu={closeMenu} />
+
+      <Button
+        onClick={() => {
+          verifyPaymentMutation.mutate({ reference });
+        }}
+      >
+        Click me
+      </Button>
 
       <Hero />
       <Features />
