@@ -6,24 +6,26 @@ import { paymentPageSchema } from "../../schemas/auth.schema";
 import Input from "../../components/Input";
 import { Mail, UserIcon } from "lucide-react";
 import Button from "../../components/Button";
-import { usePaymentPage } from "../../hooks/usePaymentPage";
+import { usePayment, usePaymentInfo } from "../../hooks/usePaymentPage";
 import { useParams } from "@tanstack/react-router";
 
 const PaymentPage = () => {
   const { slug } = useParams({ from: "/pay/$slug" });
-  const { paymentPageMutation, paymentInfoQuery } = usePaymentPage(slug);
 
-  const loading = paymentInfoQuery.isLoading;
+  const { mutate: paymentMutate, isPending } = usePayment();
+
+  const { data: paymentInfo, isPending: loading } = usePaymentInfo(slug);
 
   const amountFormatter = (amount) => {
     if (amount == null) return "";
+
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
       currency: "NGN",
     }).format(amount);
   };
 
-  const amount = amountFormatter(paymentInfoQuery.data?.amount_per_student);
+  const amount = amountFormatter(paymentInfo?.amount_per_student);
 
   const {
     register,
@@ -40,7 +42,7 @@ const PaymentPage = () => {
   });
 
   const submitHandler = (data) => {
-    paymentPageMutation.mutate(
+    paymentMutate(
       { slug, data },
       {
         onSuccess: (res) => {
@@ -58,21 +60,21 @@ const PaymentPage = () => {
           <div className="flex flex-col items-center text-center">
             <Logo />
 
-            {/* TITLE SKELETON */}
+            {/* TITLE */}
             {loading ? (
               <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mt-2"></div>
             ) : (
               <h1 className="mt-2 text-xl font-semibold text-gray-900">
-                {paymentInfoQuery.data?.title}
+                {paymentInfo?.title}
               </h1>
             )}
 
-            {/* DESCRIPTION SKELETON */}
+            {/* DESCRIPTION */}
             {loading ? (
               <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse mt-3"></div>
             ) : (
               <p className="text-sm text-gray-500 mt-2">
-                {paymentInfoQuery.data?.description}
+                {paymentInfo?.description}
               </p>
             )}
 
@@ -90,7 +92,6 @@ const PaymentPage = () => {
                 </h2>
               )}
 
-              {/* GLASS BADGE */}
               <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
                 Secure Payment
               </div>
@@ -137,10 +138,7 @@ const PaymentPage = () => {
               leftIcon={<Mail className="text-gray-400" />}
             />
 
-            <Button
-              isLoading={paymentPageMutation.isPending}
-              className="w-full mt-2"
-            >
+            <Button isLoading={isPending} className="w-full mt-2">
               Proceed to Payment
             </Button>
           </form>

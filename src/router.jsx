@@ -52,6 +52,10 @@ const paymentSuccessRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: routes.PAYMENTSUCCESSPAGE,
   component: SuccessPage,
+  validateSearch: z.object({
+    reference: z.string(),
+    txref: z.string().optional(),
+  }),
 });
 
 const authLayoutRoute = createRoute({

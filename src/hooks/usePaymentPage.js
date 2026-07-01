@@ -3,26 +3,24 @@ import { payment, paymentInfo } from "../services/paymentPageService";
 import { handleApiError } from "../utils/getErrorMessage";
 import { verifyPayment } from "../services/appService";
 
-export function usePaymentPage(slug) {
-  const paymentPageMutation = useMutation({
+export function usePayment() {
+  return useMutation({
     mutationFn: payment,
     onError: handleApiError,
   });
+}
 
-  const paymentInfoQuery = useQuery({
+export function usePaymentInfo(slug) {
+  return useQuery({
     queryKey: ["payment-info", slug],
     queryFn: () => paymentInfo({ slug }),
     enabled: !!slug,
   });
+}
 
-  const verifyPaymentMutation = useMutation({
+export function useVerifyPayment() {
+  return useMutation({
     mutationFn: verifyPayment,
     onError: handleApiError,
   });
-
-  return {
-    paymentPageMutation,
-    paymentInfoQuery,
-    verifyPaymentMutation,
-  };
 }

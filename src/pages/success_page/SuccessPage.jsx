@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../../components/Logo";
 import Button from "../../components/Button";
 import {
@@ -10,21 +10,54 @@ import {
   User,
   ArrowLeft,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { routes } from "../../constants/routes";
+import { useVerifyPayment } from "../../hooks/usePaymentPage";
 
 const SuccessPage = () => {
-  // Replace this with your backend response later
-  const payment = {
-    amount: "₦5,000.00",
-    recipient: "Samuel",
-    email: "john@example.com",
-    reference: "UNI_83HDU293",
-    date: "26 Jun 2026 • 2:45 PM",
+  const { reference } = useSearch({
+    from: routes.PAYMENTSUCCESSPAGE,
+  });
+
+  const {
+    mutate: verifyPaymentMutate,
+    data,
+    isPending,
+    isError,
+  } = useVerifyPayment();
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+
+    return new Intl.DateTimeFormat("en-NG", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(new Date(dateString));
+  };
+
+  useEffect(() => {
+    if (!reference) return;
+
+    verifyPaymentMutate({ reference });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reference]);
+
+  const payment = data;
+
+  const amountFormatter = (amount) => {
+    if (amount == null) return "";
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+    }).format(amount);
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center px-4 py-10">
+    <section className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-lg">
         <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-xl p-8">
           {/* Logo */}
@@ -57,25 +90,25 @@ const SuccessPage = () => {
             <InfoRow
               icon={<Hash size={18} />}
               label="Reference"
-              value={payment.reference}
+              value={payment?.reference}
             />
 
             <InfoRow
               icon={<User size={18} />}
               label="Recipient"
-              value={payment.recipient}
+              value={payment?.recipient}
             />
 
             <InfoRow
               icon={<Mail size={18} />}
               label="Email"
-              value={payment.email}
+              value={payment?.email}
             />
 
             <InfoRow
               icon={<CalendarDays size={18} />}
               label="Date"
-              value={payment.date}
+              value={formatDate(payment?.paid_at)}
             />
 
             <div className="border-t pt-5">
@@ -84,7 +117,7 @@ const SuccessPage = () => {
               </p>
 
               <h2 className="text-4xl font-bold text-primary mt-2">
-                {payment.amount}
+                {amountFormatter(payment?.amount)}
               </h2>
             </div>
           </div>
@@ -99,7 +132,7 @@ const SuccessPage = () => {
 
                 <p className="text-sm text-green-600 mt-1">
                   A payment receipt has been sent to
-                  <span className="font-medium"> {payment.email}</span>
+                  <span className="font-medium"> {payment?.email}</span>
                 </p>
               </div>
             </div>
