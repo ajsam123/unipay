@@ -9,16 +9,22 @@ import {
   Mail,
   User,
   ArrowLeft,
+  LoaderCircle,
 } from "lucide-react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { routes } from "../../constants/routes";
-import { useVerifyPayment } from "../../hooks/usePaymentPage";
+import {
+  useDownloadReceipt,
+  useVerifyPayment,
+} from "../../hooks/usePaymentPage";
+import toast from "react-hot-toast";
 
 const SuccessPage = () => {
   const { reference } = useSearch({
     from: routes.PAYMENTSUCCESSPAGE,
   });
 
+  /// Verify Payment Mutation
   const {
     mutate: verifyPaymentMutate,
     data,
@@ -26,6 +32,47 @@ const SuccessPage = () => {
     isError,
   } = useVerifyPayment();
 
+  // Download receipt Mutation
+  const { mutate: downloadReceiptMutate, isPending: downloading } =
+    useDownloadReceipt();
+
+  // Downloading receipt function
+  const handleDownloadReceipt = () => {
+    downloadReceiptMutate(
+      { reference },
+      {
+        // blob - Binary Large Object(A javascript object representing raw file data)
+        onSuccess: (blob) => {
+          // Create a temporary url that points to the Blob
+          const url = window.URL.createObjectURL(blob);
+
+          // Creates an invisible temporary link <a></a>
+          const link = document.createElement("a");
+
+          // Tells the link where it should point - instead of pointing to google or another website - it points to our pdf
+          link.href = url;
+
+          // Tells the browser to download it and not open it, it also specifies the filename
+
+          link.download = `receipt-${reference}.pdf`;
+
+          // This line temporarily adds it to the page (It is still invisible)
+          document.body.appendChild(link);
+
+          // Instead of waitong for the user to click the link, which is not feasible - Javascript clicks the link
+          link.click();
+
+          // Once the download has started, we remove the invisible link
+          link.remove();
+
+          // It removes the temporary url that was created
+          window.URL.revokeObjectURL(url);
+
+          toast.success("Receipt Downloaded");
+        },
+      },
+    );
+  };
   const formatDate = (dateString) => {
     if (!dateString) return "";
 
@@ -55,6 +102,21 @@ const SuccessPage = () => {
       currency: "NGN",
     }).format(amount);
   };
+
+  if (isPending) {
+    return (
+      <div>
+        <section className="min-h-screen flex items-center justify-center bg-white">
+          <div>
+            <LoaderCircle size={52} className="animate-spin text-primary" />
+          </div>
+          <span className="text-gray-500 text-sm">
+            Verifying your payment....
+          </span>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center px-4 py-10">
@@ -140,19 +202,14 @@ const SuccessPage = () => {
 
           {/* Buttons */}
           <div className="mt-8 space-y-3">
-            <Button leftIcon={<Download size={18} />} className="w-full">
+            <Button
+              leftIcon={<Download size={18} />}
+              className="w-full"
+              onClick={handleDownloadReceipt}
+              isLoading={downloading}
+            >
               Download Receipt
             </Button>
-
-            <Link to={routes.HOMEPAGE} className="block">
-              <Button
-                variant="stroke"
-                className="w-full"
-                leftIcon={<ArrowLeft size={18} />}
-              >
-                Back to Homepage
-              </Button>
-            </Link>
           </div>
 
           {/* Footer */}

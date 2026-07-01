@@ -97,7 +97,14 @@ export const updateBankDetails = async (data) => {
 };
 
 export const verifyPayment = async ({ reference }) => {
-  console.log(reference);
   const res = await appApi.get(`api/payments/verify?reference=${reference}`);
+  return res.data;
+};
+
+// Download receipt
+export const downloadReceipt = async ({ reference }) => {
+  const res = await appApi.get(`api/payments/receipt?reference=${reference}`, {
+    responseType: "blob",
+  });
   return res.data;
 };

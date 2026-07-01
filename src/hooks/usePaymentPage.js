@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { payment, paymentInfo } from "../services/paymentPageService";
 import { handleApiError } from "../utils/getErrorMessage";
-import { verifyPayment } from "../services/appService";
+import { downloadReceipt, verifyPayment } from "../services/appService";
 
 export function usePayment() {
   return useMutation({
@@ -22,5 +22,12 @@ export function useVerifyPayment() {
   return useMutation({
     mutationFn: verifyPayment,
     onError: handleApiError,
+  });
+}
+
+export function useDownloadReceipt() {
+  return useMutation({
+    mutationFn: downloadReceipt,
+    onerror: handleApiError,
   });
 }
