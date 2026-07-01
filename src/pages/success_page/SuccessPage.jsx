@@ -118,8 +118,25 @@ const SuccessPage = () => {
     );
   }
 
+  if (isError) {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600">
+            Payment verification failed
+          </h2>
+
+          <p className="mt-2 text-gray-500">
+            We couldn't verify your payment. Please contact support if you've
+            already been charged.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center px-4 py-10">
+    <section className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center md:px-4 py-6 md:py-10 px-2 ">
       <div className="w-full max-w-lg">
         <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-xl p-8">
           {/* Logo */}
@@ -128,15 +145,18 @@ const SuccessPage = () => {
           </div>
 
           {/* Success Icon */}
-          <div className="flex justify-center mt-8">
-            <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center shadow-sm">
+          <div className="flex justify-center mt-3">
+            <div
+              className="md:w-24 md:h-24 
+            md:12 h:12 rounded-full bg-green-100 flex items-center justify-center shadow-sm"
+            >
               <CircleCheckBig size={50} className="text-green-600" />
             </div>
           </div>
 
           {/* Heading */}
           <div className="text-center mt-6">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="lg:text-3xl text-xl font-bold text-gray-900">
               Payment Successful
             </h1>
 
@@ -148,7 +168,7 @@ const SuccessPage = () => {
           </div>
 
           {/* Transaction Card */}
-          <div className="mt-8 rounded-2xl bg-white border border-gray-100 shadow-sm p-6 space-y-5">
+          <div className="mt-8 rounded-2xl bg-white border border-gray-100 shadow-sm p-6 space-y-5 text-sm">
             <InfoRow
               icon={<Hash size={18} />}
               label="Reference"
@@ -178,7 +198,7 @@ const SuccessPage = () => {
                 Amount Paid
               </p>
 
-              <h2 className="text-4xl font-bold text-primary mt-2">
+              <h2 className="text-2xl md:text-4xl font-bold text-primary mt-2">
                 {amountFormatter(payment?.amount)}
               </h2>
             </div>
