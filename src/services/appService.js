@@ -113,7 +113,7 @@ export const updateBankDetails = async (data) => {
 
 //  Verify payment
 export const verifyPayment = async ({ reference }) => {
-  const res = await appApi.get(`api/payments/verify?reference=${reference}`);
+  const res = await appApi.get(`api/s/verify?reference=${reference}`);
   return res.data;
 };
 
