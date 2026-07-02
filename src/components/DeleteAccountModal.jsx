@@ -1,7 +1,24 @@
 import React from "react";
+import DeleteLinkModal from "./DeleteLinkModal";
+import { useMutation } from "@tanstack/react-query";
+import { handleApiError } from "../utils/getErrorMessage";
+import toast from "react-hot-toast";
+import { redirect } from "react-router";
+import { routes } from "../constants/routes";
 
 const DeleteAccountModal = ({ onClose }) => {
-  const handleDelete = () => {};
+  const { mutate, isPending } = useMutation({
+    mutationFn: DeleteLinkModal,
+    onError: handleApiError,
+    onSuccess: () => {
+      toast.success("Account deleted successfully");
+      (onclose(), redirect(routes.HOMEPAGE));
+    },
+  });
+
+  const handleDelete = () => {
+    mutate();
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">

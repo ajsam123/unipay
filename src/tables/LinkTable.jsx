@@ -1,4 +1,4 @@
-// LinkTable.jsx
+3; // LinkTable.jsx
 import { useNavigate } from "@tanstack/react-router";
 import {
   Table,

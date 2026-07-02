@@ -13,7 +13,7 @@ import { useModalStore } from "../../store/modalStore";
 import BankDetailsForm from "../../components/BankDetailsForm";
 import { useUsers } from "../../hooks/useUsers.js";
 import { useGetBankDetails } from "../../hooks/useBank.js";
-
+import LogoutModal from "../../components/LogoutModal.jsx";
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
 
@@ -23,8 +23,6 @@ const Profile = () => {
   // Fetch bank details
   const { data: bankDetails, isLoading: bankDetailsLoading } =
     useGetBankDetails(user?.has_subaccount);
-
-  const handleDeleteAccount = () => {};
 
   return (
     <div className="rounded-lg flex gap-6 w-full flex-col">
@@ -162,7 +160,13 @@ const Profile = () => {
         <ProfileUserInfo title="Danger zone" body="Proceed with Caution" />
 
         <div className="flex gap-5 col-span-2 flex-col w-full">
-          <Button variant="stroke" leftIcon={<LogOut size={20} />}>
+          <Button
+            variant="stroke"
+            leftIcon={<LogOut size={20} />}
+            onClick={() => {
+              openModal(LogoutModal);
+            }}
+          >
             Logout
           </Button>
 

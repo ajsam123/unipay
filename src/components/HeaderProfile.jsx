@@ -1,9 +1,16 @@
 import { ChevronDown } from "lucide-react";
 import ActionModal from "./ActionModal";
 import { useUsers } from "../hooks/useUsers";
+import { useModalStore } from "../store/modalStore";
+import LogoutModal from "./LogoutModal";
+import { routes } from "../constants/routes";
+import { useNavigate } from "@tanstack/react-router";
 
 const HeaderProfile = () => {
   const { data: user, isLoading } = useUsers();
+
+  const { openModal } = useModalStore();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -21,11 +28,16 @@ const HeaderProfile = () => {
   }
 
   const userActions = [
-    { label: "Settings", onClick: () => console.log("Settings opened") },
+    {
+      label: "Profile",
+      onClick: () => {
+        navigate({ to: routes.PROFILE });
+      },
+    },
     { label: "Support", onClick: () => console.log("Support clicked") },
     {
       label: "Log Out",
-      onClick: () => console.log("User logged out"),
+      onClick: () => openModal(LogoutModal),
       color: "red",
     },
   ];

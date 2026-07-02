@@ -124,3 +124,10 @@ export const downloadReceipt = async ({ reference }) => {
   });
   return res.data;
 };
+
+// Logout
+export const logout = async (data) => {
+  const res = await appApi.post("api/auth/logout/", data);
+
+  return res.data;
+};
