@@ -12,30 +12,40 @@ export const getDashboardData = async () => {
   return res.data;
 };
 
+/* Fetch banks and their codes */
+
 export const getBanks = async () => {
   const res = await appApi.get("/api/banks/");
   return res.data;
 };
 
+/* Get account name using account code and account number */
 export const resolveAccount = async (data) => {
   const res = await appApi.post("/api/payouts/resolve-account/", data);
   return res.data;
 };
 
+/**Create subaccount using bank details */
 export const createSubaccount = async (data) => {
   const res = await appApi.post("/api/payouts/create-subaccount/", data);
   return res.data;
 };
+
+/**Create payment link */
 
 export const createPaymentLink = async (data) => {
   const res = await appApi.post("/api/link/create/", data);
   return res.data;
 };
 
+/**Get all payment Links */
+
 export const getPaymentLinks = async () => {
   const res = await appApi.get("api/links/");
   return res.data;
 };
+
+/**Delete a particular payment Link  */
 
 export const deletepaymentLink = async (id) => {
   const res = await appApi.delete(`api/links/${id}/delete/`);
@@ -69,33 +79,39 @@ export const updateUser = async (data) => {
   return res.data;
 };
 
+// Get total transactions
+
 export const getTransactions = async () => {
   const res = await appApi.get("api/transactions/");
   return res.data;
 };
 
+// Get each transaction Details
 export const getTransactionDetails = async ({ id }) => {
   const res = await appApi.get(`/api/transactions/${id}/`);
   return res.data;
 };
+
+// Fetching transaction by link
 
 export const getTransactionsByLink = async ({ id }) => {
   const res = await appApi.get(`api/links/${id}/transactions/`);
   return res.data;
 };
 
-// Bank details
-
+// Get Bank details
 export const getBankDetails = async () => {
   const res = await appApi.get("api/bank-details/me/");
   return res.data;
 };
 
+// Edit/Update Bank Details
 export const updateBankDetails = async (data) => {
   const res = await appApi.patch("api/bank-details/update/", data);
   return res.data;
 };
 
+//  Verify payment
 export const verifyPayment = async ({ reference }) => {
   const res = await appApi.get(`api/payments/verify?reference=${reference}`);
   return res.data;

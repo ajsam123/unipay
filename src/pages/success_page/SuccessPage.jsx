@@ -90,8 +90,7 @@ const SuccessPage = () => {
     if (!reference) return;
 
     verifyPaymentMutate({ reference });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reference]);
+  }, [reference, verifyPaymentMutate]);
 
   const payment = data;
 
@@ -136,9 +135,9 @@ const SuccessPage = () => {
   }
 
   return (
-    <section className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center md:px-4 py-6 md:py-10 px-2 ">
+    <section className="bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center md:px-4 py-6 md:py-10">
       <div className="w-full max-w-lg">
-        <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-xl p-8">
+        <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-xl p-4 md:p-8">
           {/* Logo */}
           <div className="flex justify-center">
             <Logo />

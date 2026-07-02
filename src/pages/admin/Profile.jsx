@@ -17,10 +17,14 @@ import { useGetBankDetails } from "../../hooks/useBank.js";
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
 
+  // Fetch User Data
   const { data: user, isLoading: isUserLoading } = useUsers();
 
+  // Fetch bank details
   const { data: bankDetails, isLoading: bankDetailsLoading } =
     useGetBankDetails(user?.has_subaccount);
+
+  const handleDeleteAccount = () => {};
 
   return (
     <div className="rounded-lg flex gap-6 w-full flex-col">
@@ -157,9 +161,9 @@ const Profile = () => {
       <div className="lg:grid grid-cols-3 lg:gap-10 gap-5 flex flex-col w-full">
         <ProfileUserInfo title="Danger zone" body="Proceed with Caution" />
 
-        <div className="lg:flex gap-5 col-span-2 flex-col w-full">
+        <div className="flex gap-5 col-span-2 flex-col w-full">
           <Button variant="stroke" leftIcon={<LogOut size={20} />}>
-            Logout of all sessions
+            Logout
           </Button>
 
           <Button variant="red" leftIcon={<UserX size={20} />}>
