@@ -1,6 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPendingVerifications, verifyUser } from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
+import { superAdminLogin } from "../services/authService";
+import {
+  getAdminDashboard,
+  getPendingVerifications,
+  verifyUser,
+} from "../services/appService";
 
 // ---------------- GET PENDING VERIFICATIONS ----------------
 export const useGetPendingVerifications = () => {
@@ -23,3 +28,21 @@ export const useVerifyUser = () => {
     onError: handleApiError,
   });
 };
+
+export function useAdminLogin() {
+  return useMutation({
+    mutationFn: superAdminLogin,
+    onError: handleApiError,
+    onSuccess: (data) => {
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+    },
+  });
+}
+
+export function useGetAdminDashboard() {
+  return useQuery({
+    queryFn: getAdminDashboard,
+    queryKey: ["admin-dashboard"],
+  });
+}

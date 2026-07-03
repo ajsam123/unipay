@@ -16,4 +16,7 @@ export const routes = {
   TRANSACTION: "/payment-pages/$linkId",
   VERIFICATIONCENTRE: "/verification-centre",
   PAYMENTSUCCESSPAGE: "/payment/success",
+  SUPERADMINLOGIN: "/admin/login",
+  SUPERADMINDASHBOARD: "/admin/dashboard",
+  ADMINUSERS: "/admin/users",
 };

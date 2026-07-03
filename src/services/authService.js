@@ -50,8 +50,6 @@ export const resendOtp = async (data) => {
   return res.data;
 };
 
-
-
 /* CURRENT USER */
 export const getMe = async () => {
   const res = await authApi.get("/auth/users/me/");
@@ -62,4 +60,12 @@ export const getMe = async () => {
 export const logout = () => {
   localStorage.clear();
   window.location.href = "/login";
+};
+
+/** SUPER ADMIN */
+
+// Super admin Login
+export const superAdminLogin = async (data) => {
+  const res = await authApi.post("api/api/admin/login/", data);
+  return res.data;
 };

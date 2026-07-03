@@ -131,3 +131,16 @@ export const logout = async (data) => {
 
   return res.data;
 };
+
+//  Get super admin user info
+
+export const getAdminInfo = async () => {
+  const res = await appApi.get("api/api/s");
+  return res.data;
+};
+
+// Get super Admin Dashboard data
+export const getAdminDashboard = async () => {
+  const res = await appApi.get("api/api/admin/dashboard/");
+  return res.data;
+};

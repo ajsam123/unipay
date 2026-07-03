@@ -32,7 +32,6 @@ const Dashboard = () => {
               value={dashboardData?.total_links || 0}
               icon={Link}
             />
-
             <StatCard
               title="Total Collected"
               description="Successful payments"
@@ -40,7 +39,6 @@ const Dashboard = () => {
               icon={Wallet}
               valueClassName="text-green-600"
             />
-
             <StatCard
               title="Total Transactions"
               description="All transactions"

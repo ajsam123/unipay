@@ -33,6 +33,9 @@ import TransactionsPage from "./pages/admin/TransactionsPage";
 import VerificationCentrePage from "./superadmin/VerificationCentrePage";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
+import SuperAdminLogin from "./superadmin/superAdminLogin";
+import SuperAdminDashboard from "./superadmin/superAdminDashboard";
+import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -206,6 +209,35 @@ export const verificationCentre = createRoute({
   component: VerificationCentrePage,
 });
 
+/** SUPER ADMIN */
+
+// Super Admin Login
+
+const superAdminLoginRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: routes.SUPERADMINLOGIN,
+  component: SuperAdminLogin,
+});
+
+// Super Admin App Layout
+
+const superAdminLayoutRoute = createRootRoute({
+  component: SuperAdminAppLayout,
+});
+
+const superAdminDashboard = createRoute({
+  getParentRoute: () => superAdminLayoutRoute,
+  path: routes.SUPERADMINDASHBOARD,
+  component: SuperAdminDashboard,
+});
+
+/// Route that concerns fetching all users
+
+const AdminUsers = createRoute({
+  getParentRoute: () => superAdminLayoutRoute,
+  path: routes.ADMINUSERS,
+  // component:
+});
 /* ================= ROUTE TREE ================= */
 
 const routeTree = rootRoute.addChildren([
@@ -218,6 +250,7 @@ const routeTree = rootRoute.addChildren([
     loginOtpRoute,
     forgotPasswordOtpRoute,
     resetPasswordRoute,
+    superAdminLoginRoute,
   ]),
   appLayoutRoute.addChildren([
     dashboardRoute,
@@ -227,6 +260,7 @@ const routeTree = rootRoute.addChildren([
     transactionsPageRoute,
     verificationCentre,
   ]),
+  superAdminLayoutRoute.addChildren([superAdminDashboard]),
   homepageRoute,
   publicPaymentRoute,
   paymentSuccessRoute,
