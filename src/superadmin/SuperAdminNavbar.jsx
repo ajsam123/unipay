@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { routes } from "../constants/routes";
 import { useNavbar } from "../store/useNavbar";
+import NavbarLogo from "../components/NavbarLogo";
+import NavbarLink from "../components/NavbarLink";
 
 const SuperAdminNavbar = () => {
   // Define nav items in an array for cleaner mapping
@@ -25,7 +27,7 @@ const SuperAdminNavbar = () => {
     {
       icon: <ShieldCheck size={20} />,
       label: "Verification Centre",
-      path: routes.VERIFICATIONCENTRE,
+      path: routes.SUPERADMINVERIFICATION,
     },
   ];
   const { navbar, setNavbar } = useNavbar((s) => s);

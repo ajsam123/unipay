@@ -25,22 +25,22 @@ const SuperAdminDashboard = () => {
         ) : (
           <>
             <StatCard
-              title="Total Links"
+              title="Approved Users"
               description="All created payment links"
-              value={dashboardData?.total_links || 0}
+              value={dashboardData?.approved_users || 0}
               icon={Link}
             />
             <StatCard
-              title="Total Collected"
-              description="Successful payments"
-              value={formattedAmount}
+              title="Pending verifications"
+              description="All pending verifications"
+              value={dashboardData?.pending_verifications}
               icon={Wallet}
               valueClassName="text-green-600"
             />
             <StatCard
-              title="Total Transactions"
-              description="All transactions"
-              value={dashboardData?.total_transaction || 0}
+              title="Total Users"
+              description="All approved users"
+              value={dashboardData?.total_users || 0}
               icon={Clock}
               valueClassName="text-blue-500"
             />

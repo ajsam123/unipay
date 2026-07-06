@@ -87,22 +87,6 @@ const TransactionTable = ({ linkId }) => {
   const showPagination = transactionData.length > 10;
   const hasTransactions = transactionData.length > 0;
 
-  // LOADING STATE
-  if (transactionLoading) {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div className="space-y-4 animate-pulse">
-          <div className="h-5 w-1/3 bg-gray-200 rounded"></div>
-
-          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
-          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
-          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
-          <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>

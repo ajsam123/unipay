@@ -3,7 +3,9 @@ import { handleApiError } from "../utils/getErrorMessage";
 import { superAdminLogin } from "../services/authService";
 import {
   getAdminDashboard,
+  getAllUsers,
   getPendingVerifications,
+  getUserDetails,
   verifyUser,
 } from "../services/appService";
 
@@ -44,5 +46,23 @@ export function useGetAdminDashboard() {
   return useQuery({
     queryFn: getAdminDashboard,
     queryKey: ["admin-dashboard"],
+  });
+}
+
+// Query to get all users
+export function useGetAllUsers() {
+  return useQuery({
+    queryFn: getAllUsers,
+    queryKey: ["all-users"],
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetUsersDetails({ id }) {
+  return useQuery({
+    queryFn: () => getUserDetails({ id }),
+    queryKey: ["user-details", id],
+    onError: handleApiError,
+    refetchOnWindowFocus: false,
   });
 }

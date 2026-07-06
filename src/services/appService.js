@@ -135,12 +135,22 @@ export const logout = async (data) => {
 //  Get super admin user info
 
 export const getAdminInfo = async () => {
-  const res = await appApi.get("api/api/s");
+  const res = await appApi.get("api/api/admin/me");
   return res.data;
 };
 
 // Get super Admin Dashboard data
 export const getAdminDashboard = async () => {
-  const res = await appApi.get("api/api/admin/dashboard/");
+  const res = await appApi.get("api/admin/dashboard/");
+  return res.data;
+};
+
+export const getAllUsers = async () => {
+  const res = await appApi.get("api/admin/users/");
+  return res.data;
+};
+
+export const getUserDetails = async ({ id }) => {
+  const res = await appApi.get(`/api/admin/users/${id}`);
   return res.data;
 };

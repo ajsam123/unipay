@@ -39,7 +39,7 @@ const RowActions = memo(({ user, openModal }) => {
 });
 
 // ---------------- Page ----------------
-const VerificationCentrePage = () => {
+const SuperAdminVerification = () => {
   const [sorting, setSorting] = useState([]);
   const openModal = useModalStore((s) => s.openModal);
 
@@ -209,4 +209,4 @@ const VerificationCentrePage = () => {
   );
 };
 
-export default VerificationCentrePage;
+export default SuperAdminVerification;

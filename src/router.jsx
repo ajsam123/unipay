@@ -30,12 +30,14 @@ import PaymentPages from "./pages/admin/PaymentPages";
 import { routes } from "./constants/routes";
 import z from "zod";
 import TransactionsPage from "./pages/admin/TransactionsPage";
-import VerificationCentrePage from "./superadmin/VerificationCentrePage";
+import VerificationCentrePage from "./superadmin/SuperAdminVerification";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
 import SuperAdminLogin from "./superadmin/superAdminLogin";
 import SuperAdminDashboard from "./superadmin/superAdminDashboard";
 import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
+import SuperAdminVerification from "./superadmin/SuperAdminVerification";
+import SuperAdminUsers from "./superadmin/SuperAdminUsers";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -203,12 +205,6 @@ export const transactionsPageRoute = createRoute({
   component: TransactionsPage,
 });
 
-export const verificationCentre = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: routes.VERIFICATIONCENTRE,
-  component: VerificationCentrePage,
-});
-
 /** SUPER ADMIN */
 
 // Super Admin Login
@@ -221,8 +217,19 @@ const superAdminLoginRoute = createRoute({
 
 // Super Admin App Layout
 
-const superAdminLayoutRoute = createRootRoute({
+const superAdminLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
   component: SuperAdminAppLayout,
+  id: "super-admin",
+  beforeLoad: () => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      throw redirect({
+        to: routes.SUPERADMINLOGIN,
+      });
+    }
+  },
 });
 
 const superAdminDashboard = createRoute({
@@ -233,10 +240,16 @@ const superAdminDashboard = createRoute({
 
 /// Route that concerns fetching all users
 
-const AdminUsers = createRoute({
+const superAdminUsers = createRoute({
   getParentRoute: () => superAdminLayoutRoute,
   path: routes.ADMINUSERS,
-  // component:
+  component: SuperAdminUsers,
+});
+
+export const superAdminVerification = createRoute({
+  getParentRoute: () => superAdminLayoutRoute,
+  path: routes.SUPERADMINVERIFICATION,
+  component: SuperAdminVerification,
 });
 /* ================= ROUTE TREE ================= */
 
@@ -258,9 +271,13 @@ const routeTree = rootRoute.addChildren([
     payoutRoute,
     paymentPagesRoute,
     transactionsPageRoute,
-    verificationCentre,
   ]),
-  superAdminLayoutRoute.addChildren([superAdminDashboard]),
+
+  superAdminLayoutRoute.addChildren([
+    superAdminDashboard,
+    superAdminUsers,
+    superAdminVerification,
+  ]),
   homepageRoute,
   publicPaymentRoute,
   paymentSuccessRoute,
