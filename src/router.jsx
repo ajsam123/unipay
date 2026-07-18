@@ -30,14 +30,13 @@ import PaymentPages from "./pages/admin/PaymentPages";
 import { routes } from "./constants/routes";
 import z from "zod";
 import TransactionsPage from "./pages/admin/TransactionsPage";
-import VerificationCentrePage from "./superadmin/SuperAdminVerification";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
-import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
 import SuperAdminVerification from "./superadmin/SuperAdminVerification";
-import SuperAdminDashboard from "./superadmin/superadmindashboard";
+import SuperAdminDashboard from "./superadmin/superAdminDashboard";
 import SuperAdminUsers from "./superadmin/SuperAdminUsers";
-import { superAdminLogin } from "./services/authService";
+import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
+import SuperAdminLogin from "./superadmin/superAdminLogin";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -212,7 +211,7 @@ export const transactionsPageRoute = createRoute({
 const superAdminLoginRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: routes.SUPERADMINLOGIN,
-  component: superAdminLogin,
+  component: SuperAdminLogin,
 });
 
 // Super Admin App Layout
@@ -240,13 +239,13 @@ const superAdminDashboardRoute = createRoute({
 
 /// Route that concerns fetching all users
 
-const superAdminUsers = createRoute({
+const superAdminUsersRoute = createRoute({
   getParentRoute: () => superAdminLayoutRoute,
   path: routes.ADMINUSERS,
   component: SuperAdminUsers,
 });
 
-export const superAdminVerification = createRoute({
+export const superAdminVerificationRoute = createRoute({
   getParentRoute: () => superAdminLayoutRoute,
   path: routes.SUPERADMINVERIFICATION,
   component: SuperAdminVerification,
@@ -275,8 +274,8 @@ const routeTree = rootRoute.addChildren([
 
   superAdminLayoutRoute.addChildren([
     superAdminDashboardRoute,
-    superAdminUsers,
-    superAdminVerification,
+    superAdminUsersRoute,
+    superAdminVerificationRoute,
   ]),
   homepageRoute,
   publicPaymentRoute,
