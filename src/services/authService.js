@@ -16,6 +16,8 @@ export const login = async (data) => {
 export const verifyEmail = async (data) => {
   const res = await authApi.post("/api/auth/verify-email/", data);
 
+  console.log(data);
+
   return res.data;
 };
 
@@ -66,6 +68,6 @@ export const logout = () => {
 
 // Super admin Login
 export const superAdminLogin = async (data) => {
-  const res = await authApi.post("api/api/admin/login/", data);
+  const res = await authApi.post("api/admin/login/", data);
   return res.data;
 };

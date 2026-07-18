@@ -20,8 +20,10 @@ const Input = ({
         </label>
       )}
       <div
-        className={`px-3 py-2 gap-2 rounded-xl border  focus-within:inset-shadow-custom-sm focus-within:drop-shadow-sm dark:border-neutral-600 flex w-full dark:text-white dark:bg-background bg-neutral-black-2 ${InputClassName} ${errorBorder} ${
-          error ? "border-error-100 " : "border-neutral-black-5"
+        className={`px-3 py-2 gap-2 rounded-[100px] border focus-within:shadow-lg focus-within:drop-shadow-md focus-within:border-primary  flex w-full bg-neutral-black-2 ${InputClassName} ${errorBorder} ${
+          error
+            ? "shadow-lg border-destructive-foreground"
+            : "border-neutral-600"
         } `}
         tabIndex={0}
       >

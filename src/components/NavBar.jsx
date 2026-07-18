@@ -33,11 +33,6 @@ const NavBar = () => {
       label: "Profile",
       path: routes.PROFILE,
     },
-    {
-      icon: <ShieldCheck size={20} />,
-      label: "Verification Centre",
-      path: routes.VERIFICATIONCENTRE,
-    },
   ];
   const { navbar, setNavbar } = useNavbar((s) => s);
   const handleNavbar = () => {

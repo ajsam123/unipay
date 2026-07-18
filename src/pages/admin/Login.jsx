@@ -35,6 +35,15 @@ const Login = () => {
           search: { email: val.email },
         });
       },
+      onError: (error) => {
+        console.log(error);
+        if (error?.response?.data?.code[0] == "EMAIL_NOT_VERIFIED") {
+          router.navigate({
+            to: routes.LOGINOTP,
+            search: { email: val.email },
+          });
+        }
+      },
     });
   };
 
@@ -45,7 +54,7 @@ const Login = () => {
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="text-center">
-        <h1 className="heading-3">Hi, Welcome</h1>
+        <h1 className="md:heading-3 heading-4">Hi, Welcome</h1>
         <span className="text-neutral-black-9 dark:text-neutral-400 body-medium-medium">
           Please log in to your account
         </span>
@@ -71,7 +80,11 @@ const Login = () => {
           error={errors.password?.message}
         />
 
-        <Button isLoading={loginMutation.isPending} type="submit">
+        <Button
+          isLoading={loginMutation.isPending}
+          type="submit"
+          className="body-small-medium"
+        >
           Login
         </Button>
       </form>

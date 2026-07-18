@@ -9,8 +9,6 @@ import {
 } from "../services/authService";
 import { handleApiError } from "../utils/getErrorMessage";
 
-
-
 export function useAuth() {
   const queryClient = useQueryClient();
 
@@ -37,6 +35,9 @@ export function useAuth() {
       localStorage.setItem("refresh", data.refresh_token);
       // queryClient.invalidateQueries(["me"]);
     },
+    onError: (error) => {
+      handleApiError(error);
+    },
   });
 
   const resendOtpMutation = useMutation({
@@ -48,6 +49,12 @@ export function useAuth() {
 
   const verifyEmailMutation = useMutation({
     mutationFn: verifyEmail,
+    onSuccess: (data) => {
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      console.log(data);
+      // queryClient.invalidateQueries(["me"]);
+    },
     onError: (error) => {
       handleApiError(error);
     },

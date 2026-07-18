@@ -60,20 +60,14 @@ const ForgotPassword = () => {
     <section className="w-full h-full relative">
       <Link to={routes.LOGIN}>
         {" "}
-        <figure className="grid place-items-center border w-16 h-10 rounded-full">
+        <figure className="grid place-items-center border w-12 h-10 rounded-full">
           <img src={chevron} />
         </figure>
       </Link>
       <div className=" flex flex-col gap-5 w-full items-center">
-        {errors.email?.message ? (
-          <div className="bg-error-100/10 dark:bg-red-700 flex items-center gap-4 w-full py-1 px-2 rounded-lg">
-            {/* <CircleAlert /> */}
-            <p className="font-semibold">Your email is incorrect</p>
-          </div>
-        ) : null}
         <div className="flex flex-col gap-2 items-center">
-          <h1 className="heading-3">Forgot Password?</h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          <h1 className="heading-4 md:heading-3">Forgot Password?</h1>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 body-medium-medium text-center">
             No worries, we'll send you reset instructions
           </p>
         </div>

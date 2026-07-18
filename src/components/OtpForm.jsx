@@ -80,11 +80,13 @@ const OtpForm = ({ email, onSubmit, onResend, title, subtitle, isLoading }) => {
   return (
     <section className="w-full relative">
       <div className="items-center flex flex-col gap-7">
-        <div className="flex flex-col gap-2 items-center">
-          <h1 className="md:heading-3 heading-3">{title}</h1>
-          <p className="text text-neutral-600">
-            {subtitle} <span className="font-medium text-black">{email}</span>
-          </p>
+        <div className=" text-center">
+          <h1 className="md:heading-3 heading-1">{title}</h1>
+          <div className="flex flex-col">
+            <p className="text text-neutral-600">
+              {subtitle} <span className="font-medium text-black">{email}</span>
+            </p>
+          </div>
 
           {expiryTime > 0 ? (
             <p className="text-sm text-neutral-500">

@@ -67,11 +67,11 @@ const OtpInput = ({ otp, setOtp }) => {
           onKeyDown={(e) => handleKeyDown(e, i)}
           onPaste={(e) => handlePaste(e, i)}
           ref={(el) => (inputsRef.current[i] = el)}
-          className={`border border-neutral-300 bg-neutral-100/25 rounded-xl
-            lg:w-16 w-12 px-4 py-3 text-center focus:outline-0
-            focus:border-primary-400 ${
-              digit ? "border-primary-400" : ""
-            }`}
+          className={`border border-neutral-300 bg-neutral-100/25 rounded-[100px]
+            md:w-16 md:h-12 h-11 w-11 px-4 py-3 text-center focus:outline-0 
+            placeholder:text-neutral-400 placeholder:text-xl focus-within:border-primary focus-within:shadow-lg
+            focus:border-primary-400 ${digit ? "border-primary-400" : ""}`}
+          placeholder="-"
         />
       ))}
     </div>

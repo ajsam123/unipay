@@ -135,7 +135,7 @@ export const logout = async (data) => {
 //  Get super admin user info
 
 export const getAdminInfo = async () => {
-  const res = await appApi.get("api/api/admin/me");
+  const res = await appApi.get("api/admin/me");
   return res.data;
 };
 

@@ -1,7 +1,7 @@
 import { useRouterState, useRouter } from "@tanstack/react-router";
 import OtpForm from "../../components/OtpForm";
 import { routes } from "../../constants/routes";
-import {  useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPasswordOtp } from "../../services/authService";
 

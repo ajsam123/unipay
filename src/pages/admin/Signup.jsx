@@ -9,6 +9,7 @@ import { registerSchema } from "../../schemas/auth.schema.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import PasswordInput from "../../components/PasswordInput.jsx";
 import { PhoneCallIcon, User, User2Icon } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const router = useRouter();
@@ -16,10 +17,11 @@ const Signup = () => {
 
   const submitHandler = (data) => {
     signUpMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        toast.success(data?.message);
         router.navigate({
           to: routes.VERIFYEMAIL,
-          search: { email: data.email },
+          search: { email: data?.data.email },
         });
       },
     });
@@ -48,7 +50,7 @@ const Signup = () => {
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="text-center">
-        <h1 className="heading-3">Create your account</h1>
+        <h1 className="heading-4 md:heading-3">Create your account</h1>
         <span className="text-neutral-black-9 dark:text-neutral-400 body-medium-medium">
           Please fill in your details to create an account
         </span>
@@ -56,15 +58,15 @@ const Signup = () => {
 
       <form
         onSubmit={handleSubmit(submitHandler, errorHandler)}
-        className="flex flex-col gap-4 w-full"
+        className="flex flex-col gap-3 md:gap-4 w-full"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center flex-col md:flex-row md:gap-4 gap-3">
           <Input
             {...register("first_name")}
             label="First Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your first name"
-            leftIcon={<User2Icon className="text-neutral-black-9"/>}
+            leftIcon={<User2Icon className="text-neutral-black-9" />}
             error={errors.first_name?.message}
           />
 
@@ -73,7 +75,7 @@ const Signup = () => {
             label="Last Name"
             className="w-full border-neutral-black-9"
             placeholder="Input your last name"
-            leftIcon={<User2Icon className="text-neutral-black-9"/>}
+            leftIcon={<User2Icon className="text-neutral-black-9" />}
             error={errors.last_name?.message}
           />
         </div>
@@ -89,7 +91,7 @@ const Signup = () => {
 
         <Input
           {...register("phone_number")}
-          leftIcon={<PhoneCallIcon className="text-neutral-black-9"/>}
+          leftIcon={<PhoneCallIcon className="text-neutral-black-9" />}
           label="Phone number"
           className="w-full border-neutral-black-9"
           placeholder="Your phone number"

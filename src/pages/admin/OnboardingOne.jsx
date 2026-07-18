@@ -14,6 +14,7 @@ import IDUpload from "../../components/SchoolIdUpload.jsx";
 import toast from "react-hot-toast";
 import { onboarding } from "../../services/appService.js";
 import { useRouter } from "@tanstack/react-router";
+import { handleApiError } from "../../utils/getErrorMessage.js";
 const OnboardingOne = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter(); // use TanStack Router
@@ -41,15 +42,9 @@ const OnboardingOne = () => {
 
       await onboarding(val);
 
-      router.navigate({ to: routes.LOGIN });
+      router.navigate({ to: routes.DASHBOARD });
     } catch (error) {
-      console.error(error);
-      const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Invalid email or password";
-
-      toast.error(message);
+      handleApiError(error);
     } finally {
       setIsLoading(false);
     }

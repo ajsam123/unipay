@@ -3,26 +3,43 @@ import toast from "react-hot-toast";
 function extractMessage(data) {
   if (!data) return null;
 
-  // If backend returned plain string
-  if (typeof data === "string") return data;
+  // Plain string
+  if (typeof data === "string") {
+    return data;
+  }
 
-  // Standard DRF / many backends
-  if (typeof data.detail === "string") return data.detail;
+  // Prioritize common message fields
+  if (typeof data.message === "string") {
+    return data.message;
+  }
 
-  // Common API format
-  if (typeof data.message === "string") return data.message;
+  if (Array.isArray(data.message) && data.message.length) {
+    return extractMessage(data.message[0]);
+  }
 
-  // If backend returns array of errors
+  if (typeof data.detail === "string") {
+    return data.detail;
+  }
+
+  if (Array.isArray(data.detail) && data.detail.length) {
+    return extractMessage(data.detail[0]);
+  }
+
+  // If it's an array
   if (Array.isArray(data)) {
     return extractMessage(data[0]);
   }
 
-  // If object with validation errors
+  // Validation errors
   if (typeof data === "object") {
+    const ignoredKeys = ["success", "code"];
+
     for (const key in data) {
+      if (ignoredKeys.includes(key)) continue;
+
       const value = data[key];
 
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) && value.length) {
         return extractMessage(value[0]);
       }
 
@@ -31,7 +48,8 @@ function extractMessage(data) {
       }
 
       if (typeof value === "object") {
-        return extractMessage(value);
+        const nested = extractMessage(value);
+        if (nested) return nested;
       }
     }
   }
@@ -42,18 +60,19 @@ function extractMessage(data) {
 export function handleApiError(error, showToast = true) {
   let message = "Something went wrong";
 
-  // Network error (no response from server)
+  // No response = network error
   if (!error?.response) {
     message = error?.message || "Network error. Please check your connection.";
   } else {
-    const status = error.response.status;
+    const { status, data } = error.response;
 
-    // Server errors (500+)
     if (status >= 500) {
       message = "Server error. Please try again later.";
     } else {
-      const extracted = extractMessage(error.response.data);
-      if (extracted) message = extracted;
+      const extracted = extractMessage(data);
+      if (extracted) {
+        message = extracted;
+      }
     }
   }
 
