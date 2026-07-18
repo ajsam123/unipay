@@ -33,10 +33,10 @@ import TransactionsPage from "./pages/admin/TransactionsPage";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
 import SuperAdminVerification from "./superadmin/SuperAdminVerification";
-import SuperAdminDashboard from "./superadmin/superAdminDashboard";
+import SuperAdminDashboard from "./superadmin/SuperAdminDashboard";
 import SuperAdminUsers from "./superadmin/SuperAdminUsers";
 import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
-import SuperAdminLogin from "./superadmin/superAdminLogin";
+import SuperAdminLogin from "./superadmin/SuperAdminLogin";
 
 /* ================= ROOT ROUTE ================= */
 
