@@ -33,11 +33,11 @@ import TransactionsPage from "./pages/admin/TransactionsPage";
 import VerificationCentrePage from "./superadmin/SuperAdminVerification";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
-import SuperAdminLogin from "./superadmin/superAdminLogin";
 import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
 import SuperAdminVerification from "./superadmin/SuperAdminVerification";
 import SuperAdminDashboard from "./superadmin/superadmindashboard";
 import SuperAdminUsers from "./superadmin/SuperAdminUsers";
+import { superAdminLogin } from "./services/authService";
 
 /* ================= ROOT ROUTE ================= */
 
@@ -212,7 +212,7 @@ export const transactionsPageRoute = createRoute({
 const superAdminLoginRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: routes.SUPERADMINLOGIN,
-  component: SuperAdminLogin,
+  component: superAdminLogin,
 });
 
 // Super Admin App Layout
