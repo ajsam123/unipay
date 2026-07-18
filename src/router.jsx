@@ -34,9 +34,9 @@ import VerificationCentrePage from "./superadmin/SuperAdminVerification";
 import PaymentPage from "./pages/student/PaymentPage";
 import SuccessPage from "./pages/success_page/SuccessPage";
 import SuperAdminLogin from "./superadmin/superAdminLogin";
-import SuperAdminDashboard from "./superadmin/superAdminDashboard";
 import SuperAdminAppLayout from "./layouts/SuperAdminAppLayout";
 import SuperAdminVerification from "./superadmin/SuperAdminVerification";
+import SuperAdminDashboard from "./superadmin/superadmindashboard";
 import SuperAdminUsers from "./superadmin/SuperAdminUsers";
 
 /* ================= ROOT ROUTE ================= */
@@ -232,7 +232,7 @@ const superAdminLayoutRoute = createRoute({
   },
 });
 
-const superAdminDashboard = createRoute({
+const superAdminDashboardRoute = createRoute({
   getParentRoute: () => superAdminLayoutRoute,
   path: routes.SUPERADMINDASHBOARD,
   component: SuperAdminDashboard,
@@ -274,7 +274,7 @@ const routeTree = rootRoute.addChildren([
   ]),
 
   superAdminLayoutRoute.addChildren([
-    superAdminDashboard,
+    superAdminDashboardRoute,
     superAdminUsers,
     superAdminVerification,
   ]),
