@@ -39,7 +39,7 @@ const Login = () => {
         console.log(error);
         if (error?.response?.data?.code[0] == "EMAIL_NOT_VERIFIED") {
           router.navigate({
-            to: routes.LOGINOTP,
+            to: routes.VERIFYEMAIL,
             search: { email: val.email },
           });
         }

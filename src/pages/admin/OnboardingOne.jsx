@@ -12,12 +12,12 @@ import { Link } from "react-router";
 import { onboardingSchema } from "../../schemas/onboarding.schema.js";
 import IDUpload from "../../components/SchoolIdUpload.jsx";
 import toast from "react-hot-toast";
-import { onboarding } from "../../services/appService.js";
 import { useRouter } from "@tanstack/react-router";
-import { handleApiError } from "../../utils/getErrorMessage.js";
+import { useOnboardingUser, useUsers } from "../../hooks/useUsers.js";
 const OnboardingOne = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter(); // use TanStack Router
+  const { data: user } = useUsers();
+  const { mutate: onboardUser, isPending } = useOnboardingUser();
 
   const {
     handleSubmit,
@@ -35,37 +35,33 @@ const OnboardingOne = () => {
     },
   });
 
-  const submitHandler = async (val) => {
-    try {
-      setIsLoading(true);
-      console.log(val);
-
-      await onboarding(val);
-
-      router.navigate({ to: routes.DASHBOARD });
-    } catch (error) {
-      handleApiError(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const submitHandler = (val) => {
+    onboardUser(val, {
+      onSuccess: () => {
+        toast.success("Onboarding Successful");
+        router.navigate({
+          to: routes.DASHBOARD,
+        });
+      },
+    });
   };
 
   const errorHandler = (val) => {
     console.log(val);
   };
+
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="text-center">
-        <h1 className="heading-3">Hi, Welcome</h1>
+        <h1 className="heading-4 md:heading-3">Hi, {user?.first_name} </h1>
         <span className="text-neutral-black-9 dark:text-neutral-400 body-medium-medium">
-          Onboarding
+          Let's complete your onboarding.
         </span>
       </div>
       <form
         onSubmit={handleSubmit(submitHandler, errorHandler)}
-        className="flex flex-col gap-4 w-full"
+        className="flex flex-col gap-3 md:gap-4 w-full"
       >
-        <div></div>
         <Input
           {...register("university")}
           leftIcon={<img src={mail} alt="mail icon" />}
@@ -107,11 +103,11 @@ const OnboardingOne = () => {
             }}
           />
 
-          {errors.schoolId && (
-            <p className="text-red-500 text-xs">{errors.schoolId.message}</p>
+          {errors.idCardUrl && (
+            <p className="text-red-500 text-xs">{errors.idCardUrl.message}</p>
           )}
         </div>
-        <Button isLoading={isLoading}>Next</Button>
+        <Button isLoading={isPending}>Next</Button>
       </form>
     </div>
   );

@@ -14,7 +14,6 @@ const Dashboard = () => {
     currency: "NGN",
   }).format(dashboardData?.total_amount_received || 0);
 
-  console.log(dashboardData, "dashboard data");
   return (
     <div className=" flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

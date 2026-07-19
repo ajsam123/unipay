@@ -2,11 +2,9 @@ import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { QueryClient, useMutation } from "@tanstack/react-query";
-
 import Input from "../components/Input";
 import Combobox from "../components/ComboBox";
 import Button from "../components/Button";
-
 import { bankDetailsSchema } from "../schemas/bankDetails.schema";
 import { resolveAccount, createSubaccount } from "../services/appService";
 import toast from "react-hot-toast";

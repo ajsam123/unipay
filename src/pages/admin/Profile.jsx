@@ -3,6 +3,7 @@ import {
   LogOut,
   LucideUniversity,
   Mail,
+  Phone,
   User,
   UserX,
 } from "lucide-react";
@@ -65,6 +66,14 @@ const Profile = () => {
 
               <Input
                 className="w-full"
+                label="Phone number"
+                placeholder={user?.phone_number}
+                disabled
+                leftIcon={<Phone size={20} />}
+              />
+
+              <Input
+                className="w-full"
                 label="University"
                 placeholder={user?.university_name || "Not provided"}
                 disabled
@@ -73,16 +82,19 @@ const Profile = () => {
             </div>
           )}
 
-          <Input
+          {/* <Input
             label="Password"
             placeholder="Enter new password"
             leftIcon={<Lock size={20} />}
-          />
+          /> */}
         </div>
       </div>
 
       {/* ================= BANK DETAILS SECTION ================= */}
-      <div className="w-full border-b border-neutral-black-5 pb-6">
+      <div
+        className="w-full border-b border-neutral-black-5 pb-6 "
+        id="bank-details"
+      >
         <div className="flex md:justify-between md:flex-row flex-col gap-5">
           <ProfileUserInfo
             title="Bank details"

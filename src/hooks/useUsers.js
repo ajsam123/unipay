@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, updateUser } from "../services/appService";
+import { getUsers, onboarding, updateUser } from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
 
 // ---------------- GET ALL USERS ----------------
@@ -22,6 +22,14 @@ export function useUpdateUser() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["pendingVerifications"] });
     },
-    onError: handleApiError,
+    onError: handleApiError(),
+  });
+}
+export function useOnboardingUser() {
+  return useMutation({
+    mutationFn: onboarding,
+    onError: (error) => {
+      handleApiError(error);
+    },
   });
 }
