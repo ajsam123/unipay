@@ -1,12 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, onboarding, updateUser } from "../services/appService";
+import {
+  getUser,
+  getUserProfile,
+  onboarding,
+  updateUser,
+} from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
 
-// ---------------- GET ALL USERS ----------------
+// ---------------- GET USER DETAILS ----------------
 export function useUsers() {
   return useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+    queryKey: ["user"],
+    queryFn: getUser,
+    onError: handleApiError,
+    refetchOnWindowFocus: false,
+  });
+}
+
+// ------------ GET USER PROFILE DETAILS --------
+export function useProfileDetails() {
+  return useQuery({
+    queryKey: ["user-profile"],
+    queryFn: getUserProfile,
     onError: handleApiError,
     refetchOnWindowFocus: false,
   });

@@ -12,14 +12,14 @@ import ProfileUserInfo from "../../components/ProfileUserInfo";
 import Button from "../../components/Button";
 import { useModalStore } from "../../store/modalStore";
 import BankDetailsForm from "../../components/BankDetailsForm";
-import { useUsers } from "../../hooks/useUsers.js";
+import { useProfileDetails, useUsers } from "../../hooks/useUsers.js";
 import { useGetBankDetails } from "../../hooks/useBank.js";
 import LogoutModal from "../../components/LogoutModal.jsx";
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
 
   // Fetch User Data
-  const { data: user, isLoading: isUserLoading } = useUsers();
+  const { data: user, isLoading: isUserLoading } = useProfileDetails();
 
   // Fetch bank details
   const { data: bankDetails, isLoading: bankDetailsLoading } =
@@ -93,7 +93,7 @@ const Profile = () => {
       {/* ================= BANK DETAILS SECTION ================= */}
       <div
         className="w-full border-b border-neutral-black-5 pb-6 "
-        id="bank-details"
+        id="bank-detailsa"
       >
         <div className="flex md:justify-between md:flex-row flex-col gap-5">
           <ProfileUserInfo

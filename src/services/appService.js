@@ -52,9 +52,14 @@ export const deletepaymentLink = async (id) => {
   return res.data;
 };
 
-// ---------------- GET ALL USERS ----------------
-export const getUsers = async () => {
-  const res = await appApi.get("api/users/");
+// ---------------- GET USER DETAILS ----------------
+export const getUser = async () => {
+  const res = await appApi.get("api/users/me/");
+  return res.data;
+};
+
+export const getUserProfile = async () => {
+  const res = await appApi.get("api/users/profile/");
   return res.data;
 };
 
