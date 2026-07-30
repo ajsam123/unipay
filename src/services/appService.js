@@ -6,6 +6,12 @@ export const onboarding = async (data) => {
   return res.data;
 };
 
+/* CHANGE PASSWORD */
+export const changePassword = async (data) => {
+  const res = await appApi.post("api/auth/change-password/", data);
+  return res;
+};
+
 /* DASHBOARD */
 export const getDashboardData = async () => {
   const res = await appApi.get("/api/dashboard/summary/");

@@ -56,7 +56,36 @@ export const resetPasswordSchema = z
   })
   .refine((data) => data.new_password === data.confirm_new_password, {
     message: "Passwords do not match",
-    path: ["Confirm_new_password"],
+    path: ["confirm_new_password"],
+  });
+
+export const changePasswordSchema = z
+  .object({
+    old_password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .regex(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+        "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
+      ),
+
+    new_password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .regex(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+        "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
+      ),
+
+    confirm_new_password: z.string().min(8, "Please confirm your password"),
+  })
+  .refine((data) => data.new_password === data.confirm_new_password, {
+    message: "Passwords do not match",
+    path: ["confirm_new_password"],
+  })
+  .refine((data) => data.old_password !== data.new_password, {
+    message: "New password must be different from your current password",
+    path: ["new_password"],
   });
 
 export const paymentPageSchema = z.object({

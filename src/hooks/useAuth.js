@@ -8,6 +8,7 @@ import {
   resendOtp,
 } from "../services/authService";
 import { handleApiError } from "../utils/getErrorMessage";
+import { changePassword } from "../services/appService";
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -60,12 +61,12 @@ export function useAuth() {
     },
   });
 
-  // Fetch current user
-  // const { data: user, isLoading } = useQuery({
-  //   queryKey: ["me"],
-  //   queryFn: getCurrentUser,
-  //   enabled: !!localStorage.getItem("accessToken"),
-  // });
+  const changePasswordMutation = useMutation({
+    mutationFn: changePassword,
+    onError: (error) => {
+      handleApiError(error);
+    },
+  });
 
   return {
     loginMutation,
@@ -73,5 +74,6 @@ export function useAuth() {
     signUpMutation,
     verifyEmailMutation,
     resendOtpMutation,
+    changePasswordMutation,
   };
 }
