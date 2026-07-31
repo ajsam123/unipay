@@ -2,8 +2,6 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export const exportTransactionsPDF = (transactions, linkId) => {
-  console.log(transactions);
-  console.log(linkId);
   const doc = new jsPDF();
 
   const primaryBlue = [33, 96, 197];

@@ -29,9 +29,10 @@ export function useGetTransactionDetails({ id }) {
 
 export function useGetTransactionsByLink({ id }) {
   return useQuery({
-    queryKey: ["transactions-by-link"],
+    queryKey: ["transactions-by-link", id],
     queryFn: () => getTransactionsByLink({ id }),
     onError: handleApiError,
+    enabled: !!id,
     refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
   });
 }

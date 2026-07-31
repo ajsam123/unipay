@@ -50,10 +50,8 @@ const PaymentPages = () => {
           </span>
         </div>
 
-        {/* TABLE WRAPPER */}
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-2 md:p-4">
-          <LinkTable />
-        </div>
+        {/* TABLE */}
+        <LinkTable />
       </div>
     </section>
   );

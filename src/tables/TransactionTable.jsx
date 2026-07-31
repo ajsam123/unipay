@@ -18,18 +18,12 @@ import {
 import { exportTransactionsPDF } from "../utils/exportTransactionPdf.js";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
-import { useGetTransactionsByLink } from "../hooks/useTransactions.js";
 import { useModalStore } from "../store/modalStore.js";
 import TransactionDetailsModal from "../components/TransactionDetailsModal.jsx";
 import { ChevronRight } from "lucide-react";
 
-const TransactionTable = ({ linkId }) => {
+const TransactionTable = ({ transactions, linkId }) => {
   const [sorting, setSorting] = useState([]);
-
-  const { data: transactions, isLoading: transactionLoading } =
-    useGetTransactionsByLink({
-      id: linkId,
-    });
 
   const openModal = useModalStore((s) => s.openModal);
   const transactionData = transactions?.results || [];
@@ -88,7 +82,7 @@ const TransactionTable = ({ linkId }) => {
   const hasTransactions = transactionData.length > 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className=" rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Table>
         {/* ================= HEADER ================= */}
         {hasTransactions && (
