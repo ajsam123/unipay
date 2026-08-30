@@ -3,9 +3,12 @@ import {
   createSubaccount,
   getBankDetails,
   getBanks,
+  resolveAccount,
   updateBankDetails,
 } from "../services/appService";
 import { handleApiError } from "../utils/getErrorMessage";
+import toast from "react-hot-toast";
+import { useModalStore } from "../store/modalStore";
 
 /* -------------------- Fetch Banks -------------------- */
 export function useGetBanks() {
@@ -52,11 +55,30 @@ export function useUpdateBankDetails() {
 
 export function useAddBankDetails() {
   const queryClient = useQueryClient();
+  const { closeModal } = useModalStore((s) => s);
 
   return useMutation({
     mutationFn: createSubaccount,
-    // onSuccess: () => {
-
-    //   });
+    onSuccess: () => {
+      toast.success("Bank account added successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["bank-details"],
+      });
+      closeModal();
+    },
+    onError: () => {
+      toast.error("Failed to add bank account");
+    },
+  });
+}
+export function useResolveAccount() {
+  return useMutation({
+    mutationFn: resolveAccount,
+    onSuccess: () => {
+      toast.success("Account verified successfully");
+    },
+    onError: () => {
+      toast.error("Failed to verify account");
+    },
   });
 }

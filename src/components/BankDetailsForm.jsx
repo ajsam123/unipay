@@ -1,31 +1,50 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { QueryClient, useMutation } from "@tanstack/react-query";
 import Input from "../components/Input";
 import Combobox from "../components/ComboBox";
 import Button from "../components/Button";
 import { bankDetailsSchema } from "../schemas/bankDetails.schema";
-import { resolveAccount, createSubaccount } from "../services/appService";
 import toast from "react-hot-toast";
 import { useModalStore } from "../store/modalStore";
 
 import {
+  useAddBankDetails,
   useGetBankDetails,
   useGetBanks,
+  useResolveAccount,
   useUpdateBankDetails,
 } from "../hooks/useBank";
 
 const BankDetailsForm = () => {
+  // Close Modal
   const { closeModal } = useModalStore((s) => s);
 
+  // Get all banks
   const { data: banks = [] } = useGetBanks();
 
+  // Get user Bank Details
   const { data: bankDetails } = useGetBankDetails();
 
-  const updateBankDetailsMutation = useUpdateBankDetails();
+  // Add bank details/ Create Subaccount Mutation
+  const {
+    mutate: createSubaccountMutation,
+    isPending: createSubaccountIsPending,
+  } = useAddBankDetails();
 
-  const isEditing = !bankDetails;
+  // Resoleve account with bank code and account number mutation
+
+  const {
+    data: resolveAccountData,
+    mutate: resolveMutation,
+    isPending: resolveIsPending,
+    isError: resolveError,
+  } = useResolveAccount();
+
+  // Edit/update bank mutation
+  const { mutate: updateBankDetailsMutation } = useUpdateBankDetails();
+
+  const isEditing = !!bankDetails;
 
   const {
     register,
@@ -46,13 +65,15 @@ const BankDetailsForm = () => {
   const bankCode = watch("bankCode");
   const accountNumber = watch("accountNumber");
 
+  //  Original current bank details
   const originalBankCode = bankDetails?.bank_code;
   const originalAccountNumber = bankDetails?.account_number;
 
+  // Checks whether current bank code or account number is different from initial
   const hasChanged =
     bankCode !== originalBankCode || accountNumber !== originalAccountNumber;
 
-  /* -------------------- Populate Existing Values -------------------- */
+  /* -------------------- Populate Existing Bank details to input -------------------- */
 
   useEffect(() => {
     if (bankDetails) {
@@ -63,34 +84,6 @@ const BankDetailsForm = () => {
     }
   }, [bankDetails, reset]);
 
-  /* -------------------- Resolve Account -------------------- */
-
-  const resolveMutation = useMutation({
-    mutationFn: resolveAccount,
-    onSuccess: () => {
-      toast.success("Account verified successfully");
-    },
-    onError: () => {
-      toast.error("Failed to verify account");
-    },
-  });
-
-  /* -------------------- Create Subaccount -------------------- */
-
-  const createSubaccountMutation = useMutation({
-    mutationFn: createSubaccount,
-    onSuccess: () => {
-      toast.success("Bank account added successfully");
-      QueryClient.invalidateQueries({
-        queryKey: ["bank-details"],
-      });
-      closeModal();
-    },
-    onError: () => {
-      toast.error("Failed to add bank account");
-    },
-  });
-
   /* -------------------- Auto Verify -------------------- */
 
   useEffect(() => {
@@ -99,7 +92,7 @@ const BankDetailsForm = () => {
 
     if (!shouldVerify) return;
 
-    resolveMutation.mutate({
+    resolveMutation({
       bank_code: bankCode,
       account_number: accountNumber,
     });
@@ -108,18 +101,18 @@ const BankDetailsForm = () => {
   /* -------------------- Derived States -------------------- */
 
   const isAccountVerified =
-    isEditing && !hasChanged ? true : !!resolveMutation.data?.accountName;
+    isEditing && !hasChanged ? true : !!resolveAccountData?.accountName;
 
   const accountName = hasChanged
-    ? resolveMutation.data?.accountName
+    ? resolveAccountData?.accountName
     : bankDetails?.account_name;
 
   const isSaving =
-    createSubaccountMutation.isPending || updateBankDetailsMutation.isPending;
+    createSubaccountIsPending || updateBankDetailsMutation.isPending;
 
   const isButtonDisabled =
     !isValid ||
-    resolveMutation.isPending ||
+    resolveIsPending ||
     (!isAccountVerified && accountNumber?.length < 10) ||
     isSubmitting ||
     isSaving;
@@ -133,8 +126,9 @@ const BankDetailsForm = () => {
       );
       return;
     }
+    if (!hasChanged) return;
 
-    resolveMutation.mutate({
+    resolveMutation({
       bank_code: bankCode,
       account_number: accountNumber,
     });
@@ -146,7 +140,7 @@ const BankDetailsForm = () => {
     if (!isAccountVerified) return;
 
     if (isEditing) {
-      updateBankDetailsMutation.mutate(
+      updateBankDetailsMutation(
         {
           bank_code: data.bankCode,
           account_number: data.accountNumber,
@@ -165,17 +159,17 @@ const BankDetailsForm = () => {
       return;
     }
 
-    createSubaccountMutation.mutate({
+    createSubaccountMutation({
       bank_code: data.bankCode,
       account_number: data.accountNumber,
-      title: resolveMutation.data?.accountName,
+      title: resolveAccountData?.accountName,
       percentage_charge: 0,
     });
   };
 
   /* -------------------- Button Label -------------------- */
 
-  const buttonLabel = resolveMutation.isPending
+  const buttonLabel = resolveIsPending
     ? "Verifying..."
     : !isAccountVerified
       ? "Verify"
@@ -186,6 +180,10 @@ const BankDetailsForm = () => {
         : isEditing
           ? "Update Bank"
           : "Add Bank";
+
+  // Whether to show verify account error or not
+  const showVerifyerror =
+    resolveError && hasChanged && !resolveAccountData?.accountName;
 
   /* -------------------- UI -------------------- */
 
@@ -222,7 +220,7 @@ const BankDetailsForm = () => {
         error={errors.accountNumber?.message}
       />
 
-      {resolveMutation.isPending && (
+      {resolveIsPending && (
         <p className="text-sm text-gray-500">Verifying account...</p>
       )}
 
@@ -230,7 +228,7 @@ const BankDetailsForm = () => {
         <p className="body-medium-semibold text-gray-500">{accountName}</p>
       )}
 
-      {resolveMutation.isError && (
+      {showVerifyerror && (
         <p className="text-sm text-red-500">Failed to verify account</p>
       )}
 
