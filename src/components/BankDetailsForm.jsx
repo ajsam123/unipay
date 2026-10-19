@@ -17,34 +17,37 @@ import {
 } from "../hooks/useBank";
 
 const BankDetailsForm = () => {
-  // Close Modal
-  const { closeModal } = useModalStore((s) => s);
+  const closeModal = useModalStore((s) => s.closeModal);
 
-  // Get all banks
+  /* -------------------- Queries (run once on mount) -------------------- */
+
   const { data: banks = [] } = useGetBanks();
+  const { data: bankDetails, isLoading: bankDetailsLoading } =
+    useGetBankDetails();
 
-  // Get user Bank Details
-  const { data: bankDetails } = useGetBankDetails();
+  /* -------------------- Mutations -------------------- */
 
-  // Add bank details/ Create Subaccount Mutation
-  const {
-    mutate: createSubaccountMutation,
-    isPending: createSubaccountIsPending,
-  } = useAddBankDetails();
-
-  // Resoleve account with bank code and account number mutation
+  const { mutate: addBank, isPending: addIsPending } = useAddBankDetails();
+  const { mutate: updateBank, isPending: updateIsPending } =
+    useUpdateBankDetails();
 
   const {
-    data: resolveAccountData,
+    data: resolveData,
+    variables: resolvedFor, // the inputs the last verify call was made with
     mutate: resolveMutation,
     isPending: resolveIsPending,
-    isError: resolveError,
+    isSuccess: resolveIsSuccess,
+    isError: resolveIsError,
   } = useResolveAccount();
 
-  // Edit/update bank mutation
-  const { mutate: updateBankDetailsMutation } = useUpdateBankDetails();
+  /* -------------------- Mode -------------------- */
 
-  const isEditing = !!bankDetails;
+  // Edit mode only when a real saved bank exists. Default is "Add Bank".
+  const isEditing = Boolean(
+    bankDetails?.bank_code && bankDetails?.account_number,
+  );
+
+  /* -------------------- Form -------------------- */
 
   const {
     register,
@@ -52,7 +55,7 @@ const BankDetailsForm = () => {
     control,
     watch,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(bankDetailsSchema),
     mode: "all",
@@ -65,82 +68,79 @@ const BankDetailsForm = () => {
   const bankCode = watch("bankCode");
   const accountNumber = watch("accountNumber");
 
-  //  Original current bank details
   const originalBankCode = bankDetails?.bank_code;
   const originalAccountNumber = bankDetails?.account_number;
 
-  // Checks whether current bank code or account number is different from initial
+  // In edit mode: has the user changed anything from the saved bank?
   const hasChanged =
     bankCode !== originalBankCode || accountNumber !== originalAccountNumber;
 
-  /* -------------------- Populate Existing Bank details to input -------------------- */
+  // Edit mode and nothing changed -> nothing to verify, nothing to save
+  const isUnchanged = isEditing && !hasChanged;
+
+  /* -------------------- Prefill when a saved bank exists -------------------- */
 
   useEffect(() => {
-    if (bankDetails) {
+    if (originalBankCode && originalAccountNumber) {
       reset({
-        bankCode: bankDetails.bank_code,
-        accountNumber: bankDetails.account_number,
+        bankCode: originalBankCode,
+        accountNumber: originalAccountNumber,
       });
     }
-  }, [bankDetails, reset]);
+  }, [originalBankCode, originalAccountNumber, reset]);
 
-  /* -------------------- Auto Verify -------------------- */
+  /* -------------------- Verify account (the ONLY place it is called) -------------------- */
+
+  const canVerify =
+    !bankDetailsLoading &&
+    Boolean(bankCode) &&
+    /^\d{10}$/.test(accountNumber || "") &&
+    !isUnchanged;
 
   useEffect(() => {
-    const shouldVerify =
-      bankCode && accountNumber?.length === 10 && (!isEditing || hasChanged);
-
-    if (!shouldVerify) return;
+    if (!canVerify) return;
 
     resolveMutation({
       bank_code: bankCode,
       account_number: accountNumber,
     });
-  }, [bankCode, accountNumber, hasChanged]);
+  }, [canVerify, bankCode, accountNumber, resolveMutation]);
 
-  /* -------------------- Derived States -------------------- */
+  /* -------------------- Derived state -------------------- */
+
+  // Does the last verify result belong to what is currently typed?
+  const resultMatchesInputs =
+    resolvedFor?.bank_code === bankCode &&
+    resolvedFor?.account_number === accountNumber;
 
   const isAccountVerified =
-    isEditing && !hasChanged ? true : !!resolveAccountData?.accountName;
+    resolveIsSuccess && resultMatchesInputs && !!resolveData?.accountName;
 
-  const accountName = hasChanged
-    ? resolveAccountData?.accountName
-    : bankDetails?.account_name;
+  const showVerifyError = resolveIsError && resultMatchesInputs;
 
-  const isSaving =
-    createSubaccountIsPending || updateBankDetailsMutation.isPending;
+  const accountName = isUnchanged
+    ? bankDetails?.account_name
+    : isAccountVerified
+      ? resolveData.accountName
+      : null;
+
+  const isSaving = addIsPending || updateIsPending;
 
   const isButtonDisabled =
+    bankDetailsLoading ||
     !isValid ||
     resolveIsPending ||
-    (!isAccountVerified && accountNumber?.length < 10) ||
-    isSubmitting ||
+    !isAccountVerified ||
+    isUnchanged ||
     isSaving;
 
-  /* -------------------- Verify Handler -------------------- */
-
-  const handleVerify = () => {
-    if (!bankCode || accountNumber?.length !== 10) {
-      toast.error(
-        "Please select a bank and enter a valid 10-digit account number",
-      );
-      return;
-    }
-    if (!hasChanged) return;
-
-    resolveMutation({
-      bank_code: bankCode,
-      account_number: accountNumber,
-    });
-  };
-
-  /* -------------------- Submit -------------------- */
+  /* -------------------- Submit (create OR update, never both) -------------------- */
 
   const onSubmit = (data) => {
-    if (!isAccountVerified) return;
+    if (!isAccountVerified || isSaving) return;
 
     if (isEditing) {
-      updateBankDetailsMutation(
+      updateBank(
         {
           bank_code: data.bankCode,
           account_number: data.accountNumber,
@@ -155,35 +155,39 @@ const BankDetailsForm = () => {
           },
         },
       );
-
       return;
     }
 
-    createSubaccountMutation({
-      bank_code: data.bankCode,
-      account_number: data.accountNumber,
-      title: resolveAccountData?.accountName,
-      percentage_charge: 0,
-    });
+    addBank(
+      {
+        bank_code: data.bankCode,
+        account_number: data.accountNumber,
+        title: resolveData.accountName,
+        percentage_charge: 0,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Bank details added successfully");
+          closeModal();
+        },
+        onError: () => {
+          toast.error("Failed to add bank details");
+        },
+      },
+    );
   };
 
-  /* -------------------- Button Label -------------------- */
+  /* -------------------- Button label -------------------- */
 
   const buttonLabel = resolveIsPending
     ? "Verifying..."
-    : !isAccountVerified
-      ? "Verify"
-      : isSaving
-        ? isEditing
-          ? "Updating..."
-          : "Creating..."
-        : isEditing
-          ? "Update Bank"
-          : "Add Bank";
-
-  // Whether to show verify account error or not
-  const showVerifyerror =
-    resolveError && hasChanged && !resolveAccountData?.accountName;
+    : isSaving
+      ? isEditing
+        ? "Updating..."
+        : "Adding..."
+      : isEditing
+        ? "Update Bank"
+        : "Add Bank";
 
   /* -------------------- UI -------------------- */
 
@@ -216,6 +220,7 @@ const BankDetailsForm = () => {
         label="Account Number"
         placeholder="Enter 10-digit account number"
         maxLength={10}
+        inputMode="numeric"
         {...register("accountNumber")}
         error={errors.accountNumber?.message}
       />
@@ -228,16 +233,13 @@ const BankDetailsForm = () => {
         <p className="body-medium-semibold text-gray-500">{accountName}</p>
       )}
 
-      {showVerifyerror && (
-        <p className="text-sm text-red-500">Failed to verify account</p>
+      {showVerifyError && (
+        <p className="text-sm text-red-500">
+          Failed to verify account. Check the bank and account number.
+        </p>
       )}
 
-      <Button
-        type={isAccountVerified ? "submit" : "button"}
-        onClick={!isAccountVerified ? handleVerify : undefined}
-        className="w-full"
-        disabled={isButtonDisabled}
-      >
+      <Button type="submit" className="w-full" disabled={isButtonDisabled}>
         {buttonLabel}
       </Button>
     </form>

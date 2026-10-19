@@ -26,6 +26,7 @@ import { handleApiError } from "../../utils/getErrorMessage.js";
 import { routes } from "../../constants/routes.js";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import DeleteAccountModal from "../../components/DeleteAccountModal";
 const Profile = () => {
   const { openModal } = useModalStore((s) => s);
 
@@ -321,7 +322,13 @@ const Profile = () => {
             Logout
           </Button>
 
-          <Button variant="red" leftIcon={<UserX size={20} />}>
+          <Button
+            variant="red"
+            leftIcon={<UserX size={20} />}
+            onClick={() => {
+              openModal(DeleteAccountModal);
+            }}
+          >
             Delete account
           </Button>
         </div>
