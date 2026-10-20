@@ -1,4 +1,4 @@
-3; // LinkTable.jsx
+// LinkTable.jsx
 import { useNavigate } from "@tanstack/react-router";
 import {
   Table,
@@ -17,7 +17,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { routes } from "../constants/routes.js";
 import ActionModal from "../components/ActionModal.jsx";
 import DeleteLinkModal from "../components/DeleteLinkModal.jsx";
@@ -67,73 +67,78 @@ const LinkTable = () => {
 
   const openModal = useModalStore((s) => s.openModal);
 
-  const formattedLinks =
-    links?.map((link) => ({
-      id: link.id,
-      dueName: link.title,
-      amount: Number(link.amount_per_student),
-      link: link.payment_link,
-      collected: Number(link.total_amount_collected),
-      payers: link.total_student_paid,
-    })) || [];
+  // Memoized so TanStack doesn't see a "new" data array on every render
+  const formattedLinks = useMemo(
+    () =>
+      (links ?? []).map((link) => ({
+        id: link.id,
+        dueName: link.title,
+        amount: Number(link.amount_per_student),
+        link: link.payment_link,
+        collected: Number(link.total_amount_collected),
+        payers: link.total_student_paid,
+      })),
+    [links],
+  );
 
-  const columns = [
-    {
-      accessorKey: "dueName",
-      header: "Due Name",
-    },
+  // Memoized so columns keep a stable reference
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "dueName",
+        header: "Due Name",
+      },
 
-    {
-      accessorKey: "amount",
-      header: "Amount",
+      {
+        accessorKey: "amount",
+        header: "Amount",
+        cell: (info) => (
+          <span className="font-semibold text-gray-900">
+            ₦{info.getValue().toLocaleString()}
+          </span>
+        ),
+      },
 
-      cell: (info) => (
-        <span className="font-semibold text-gray-900">
-          ₦{info.getValue().toLocaleString()}
-        </span>
-      ),
-    },
+      {
+        accessorKey: "link",
+        header: "Link",
+        cell: (info) => (
+          <div className="max-w-[220px] truncate text-blue-600">
+            {info.getValue()}
+          </div>
+        ),
+      },
 
-    {
-      accessorKey: "link",
-      header: "Link",
+      {
+        accessorKey: "collected",
+        header: "Total Collected",
+        cell: (info) => (
+          <span className="font-medium text-gray-800">
+            ₦{info.getValue().toLocaleString()}
+          </span>
+        ),
+      },
 
-      cell: (info) => (
-        <div className="max-w-[220px] truncate text-blue-600">
-          {info.getValue()}
-        </div>
-      ),
-    },
+      {
+        accessorKey: "payers",
+        header: "Payers",
+      },
 
-    {
-      accessorKey: "collected",
-      header: "Total Collected",
-
-      cell: (info) => (
-        <span className="font-medium text-gray-800">
-          ₦{info.getValue().toLocaleString()}
-        </span>
-      ),
-    },
-
-    {
-      accessorKey: "payers",
-      header: "Payers",
-    },
-
-    {
-      id: "actions",
-      header: "Actions",
-
-      cell: ({ row }) => (
-        <RowActions
-          link={row.original}
-          navigate={navigate}
-          openModal={openModal}
-        />
-      ),
-    },
-  ];
+      {
+        id: "actions",
+        header: "Actions",
+        enableSorting: false,
+        cell: ({ row }) => (
+          <RowActions
+            link={row.original}
+            navigate={navigate}
+            openModal={openModal}
+          />
+        ),
+      },
+    ],
+    [navigate, openModal],
+  );
 
   const table = useReactTable({
     data: formattedLinks,
@@ -161,15 +166,10 @@ const LinkTable = () => {
           {/* Header Skeleton */}
           <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-gray-50 border-b">
             <div className="h-4 bg-gray-200 rounded w-24"></div>
-
             <div className="h-4 bg-gray-200 rounded w-20"></div>
-
             <div className="h-4 bg-gray-200 rounded w-32"></div>
-
             <div className="h-4 bg-gray-200 rounded w-28"></div>
-
             <div className="h-4 bg-gray-200 rounded w-16"></div>
-
             <div className="h-4 bg-gray-200 rounded w-20"></div>
           </div>
 
@@ -180,15 +180,10 @@ const LinkTable = () => {
               className="grid grid-cols-6 gap-4 px-6 py-5 border-b border-gray-100"
             >
               <div className="h-4 bg-gray-100 rounded w-28"></div>
-
               <div className="h-4 bg-gray-100 rounded w-16"></div>
-
               <div className="h-4 bg-gray-100 rounded w-full"></div>
-
               <div className="h-4 bg-gray-100 rounded w-24"></div>
-
               <div className="h-8 bg-gray-100 rounded-xl w-12"></div>
-
               <div className="h-8 bg-gray-100 rounded-xl w-10"></div>
             </div>
           ))}
@@ -209,7 +204,11 @@ const LinkTable = () => {
                   <TableHead
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 hover:bg-gray-100 transition"
+                    className={`px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 transition ${
+                      header.column.getCanSort()
+                        ? "cursor-pointer hover:bg-gray-100"
+                        : ""
+                    }`}
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -262,7 +261,7 @@ const LinkTable = () => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="hover:bg-gray-50 transition duration-200 cursor-pointer"
+                className="hover:bg-gray-50 transition duration-200"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

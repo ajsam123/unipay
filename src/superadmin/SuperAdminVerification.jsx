@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import {
   Table,
   TableBody,
@@ -45,51 +45,58 @@ const SuperAdminVerification = () => {
 
   const { data: users, isLoading } = useGetPendingVerifications();
 
-  const formattedUsers =
-    users?.map((user) => ({
-      id: user.id,
-      name: `${user.first_name} ${user.last_name}`,
-      email: user.email,
-      emailVerified: user.is_email_verified,
-      idApproved: user.is_id_approved,
-    })) || [];
+  // Memoized so TanStack doesn't see a "new" data array on every render
+  const formattedUsers = useMemo(
+    () =>
+      (users ?? []).map((user) => ({
+        id: user.id,
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        emailVerified: user.is_email_verified,
+        idApproved: user.is_id_approved,
+      })),
+    [users],
+  );
 
-  const columns = [
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-
-    {
-      accessorKey: "emailVerified",
-      header: "Email Verified",
-      cell: (info) =>
-        info.getValue() ? (
-          <span className="text-green-600 font-medium">Yes</span>
-        ) : (
-          <span className="text-red-500 font-medium">No</span>
+  // Memoized so columns keep a stable reference
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
+      {
+        accessorKey: "emailVerified",
+        header: "Email Verified",
+        cell: (info) =>
+          info.getValue() ? (
+            <span className="text-green-600 font-medium">Yes</span>
+          ) : (
+            <span className="text-red-500 font-medium">No</span>
+          ),
+      },
+      {
+        accessorKey: "idApproved",
+        header: "ID Status",
+        cell: () => (
+          <span className="text-yellow-600 font-medium">Pending</span>
         ),
-    },
-
-    {
-      accessorKey: "idApproved",
-      header: "ID Status",
-      cell: () => <span className="text-yellow-600 font-medium">Pending</span>,
-    },
-
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <RowActions user={row.original} openModal={openModal} />
-      ),
-    },
-  ];
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        enableSorting: false,
+        cell: ({ row }) => (
+          <RowActions user={row.original} openModal={openModal} />
+        ),
+      },
+    ],
+    [openModal],
+  );
 
   const table = useReactTable({
     data: formattedUsers,
@@ -117,7 +124,11 @@ const SuperAdminVerification = () => {
                   <TableHead
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="cursor-pointer px-6 py-4 text-xs font-semibold uppercase text-gray-500 hover:bg-gray-100"
+                    className={`px-6 py-4 text-xs font-semibold uppercase text-gray-500 ${
+                      header.column.getCanSort()
+                        ? "cursor-pointer hover:bg-gray-100"
+                        : ""
+                    }`}
                   >
                     {flexRender(
                       header.column.columnDef.header,
