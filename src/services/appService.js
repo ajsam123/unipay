@@ -167,8 +167,7 @@ export const getUserDetails = async ({ id }) => {
 };
 
 // Delete Account
-export const deleteAccount = async () => {
-  const res = await appApi.delete(`/api/auth/delete-account`);
-
-  return res;
+export const deleteAccount = async (data) => {
+  const res = await appApi.delete("/api/auth/delete-account/", { data });
+  return res.data;
 };

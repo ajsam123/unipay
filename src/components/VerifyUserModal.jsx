@@ -15,25 +15,12 @@ const VerifyUserModal = ({ userId }) => {
           toast.success("User approved successfully");
           closeModal();
         },
-      }
-    );
-  };
-
-  const handleDisapprove = () => {
-    mutate(
-      { userId, approved: false },
-      {
-        onSuccess: () => {
-          toast.success("User disapproved successfully");
-          closeModal();
-        },
-      }
+      },
     );
   };
 
   return (
     <div className="p-6 w-full max-w-md">
-
       {/* Title */}
       <h2 className="text-lg font-semibold text-gray-900 mb-2">
         Review User Verification
@@ -47,35 +34,16 @@ const VerifyUserModal = ({ userId }) => {
 
       {/* Buttons */}
       <div className="flex justify-end gap-3">
-
         {/* Cancel */}
-        <Button
-          variant="ghost"
-          onClick={closeModal}
-        >
+        <Button variant="ghost" onClick={closeModal}>
           Cancel
         </Button>
 
-        {/* Disapprove */}
-        <Button
-          variant="red"
-          onClick={handleDisapprove}
-          isLoading={isPending}
-        >
-          Disapprove
-        </Button>
-
         {/* Approve */}
-        <Button
-          variant="outline"
-          onClick={handleApprove}
-          isLoading={isPending}
-        >
+        <Button variant="outline" onClick={handleApprove} isLoading={isPending}>
           Approve
         </Button>
-
       </div>
-
     </div>
   );
 };

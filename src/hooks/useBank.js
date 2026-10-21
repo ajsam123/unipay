@@ -6,7 +6,6 @@ import {
   resolveAccount,
   updateBankDetails,
 } from "../services/appService";
-import { handleApiError } from "../utils/getErrorMessage";
 import toast from "react-hot-toast";
 import { useModalStore } from "../store/modalStore";
 
@@ -30,16 +29,26 @@ export function useGetBanks() {
   });
 }
 
+/* -------------------- Get Bank Details -------------------- */
 export function useGetBankDetails(enabled = true) {
   return useQuery({
     queryKey: ["bank-details"],
-    queryFn: getBankDetails,
-    onError: handleApiError,
-    refetchOnWindowFocus: false, // optional, avoids unnecessary refetch
+    queryFn: async () => {
+      try {
+        return await getBankDetails();
+      } catch (err) {
+        // No bank added yet -> treat as "no bank" instead of an error
+        if (err?.response?.status === 404) return null;
+        throw err;
+      }
+    },
+    refetchOnWindowFocus: false,
+    retry: false,
     enabled,
   });
 }
 
+/* -------------------- Update Bank Details -------------------- */
 export function useUpdateBankDetails() {
   const queryClient = useQueryClient();
 
@@ -53,6 +62,7 @@ export function useUpdateBankDetails() {
   });
 }
 
+/* -------------------- Add Bank Details -------------------- */
 export function useAddBankDetails() {
   const queryClient = useQueryClient();
   const { closeModal } = useModalStore((s) => s);
@@ -71,6 +81,8 @@ export function useAddBankDetails() {
     },
   });
 }
+
+/* -------------------- Resolve Account -------------------- */
 export function useResolveAccount() {
   return useMutation({
     mutationFn: resolveAccount,

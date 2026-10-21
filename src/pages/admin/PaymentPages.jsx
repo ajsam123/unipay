@@ -21,18 +21,7 @@ const PaymentPages = () => {
         </div>
 
         {/* BUTTON */}
-        <Button
-          className="
-            w-full md:w-auto 
-            px-5 py-2.5 
-            rounded-xl 
-            shadow-sm 
-            bg-black text-white 
-            hover:bg-gray-800 
-            transition
-          "
-          onClick={() => openModal(CreatePaymentLinkForm)}
-        >
+        <Button onClick={() => openModal(CreatePaymentLinkForm)}>
           + Create Payment Link
         </Button>
       </div>
